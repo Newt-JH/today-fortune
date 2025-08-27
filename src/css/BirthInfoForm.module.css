@@ -60,7 +60,7 @@
   /* Inputs */
   .input {
     height: 44px;
-    border-radius: 12px;
+    border-radius: 5px;
     border: 1px solid var(--brand-ring);
     padding: 0 12px;
     font-size: 14px;
@@ -78,7 +78,7 @@
   }
   .segmentBtn {
     height: 36px;
-    border-radius: 9999px;
+    border-radius: 13px;
     border: 1px solid var(--brand-ring);
     background: #fff;
     color: var(--brand-text);
@@ -97,7 +97,7 @@
   /* 모달 선택 트리거 버튼 (출생 시간) */
   .pickerBtn {
     height: 44px;
-    border-radius: 12px;
+    border-radius: 5px;
     border: 1px solid var(--brand-ring);
     background: #fff;
     padding: 0 12px;

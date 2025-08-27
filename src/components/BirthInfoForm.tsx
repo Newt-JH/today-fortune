@@ -1,5 +1,7 @@
+// src/components/BirthInfoForm.tsx
 'use client';
 import { useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from '@/css/BirthInfoForm.module.css';
 import BottomSheet, { BottomSheetHandle } from '@/components/BottomSheet';
 import TimePickerSheet, { getTimeLabel } from '@/components/TimePickerSheet';
@@ -8,6 +10,8 @@ type CalendarType = 'SOLAR' | 'LUNAR_PLAIN' | 'LUNAR_LEAP';
 type Gender = 'M' | 'F';
 
 export default function BirthInfoForm() {
+  const router = useRouter();
+
   const [name, setName] = useState('');
   const [calendar, setCalendar] = useState<CalendarType>('SOLAR'); // 양력 기본
   const [birth, setBirth] = useState('');                          // YYYYMMDD
@@ -17,16 +21,40 @@ export default function BirthInfoForm() {
   const [openTimeSheet, setOpenTimeSheet] = useState(false);
   const sheetRef = useRef<BottomSheetHandle>(null);
 
-  // 활성화 조건: 이름 + 생년월일(8자리 숫자)
-  const canSubmit = useMemo(() => {
-    return name.trim().length > 0 && /^\d{8}$/.test(birth);
-  }, [name, birth]);
+  // 필수값 충족 시 활성화: 이름 + 생년월일(8자리)
+  const canSubmit = useMemo(
+    () => name.trim().length > 0 && /^\d{8}$/.test(birth),
+    [name, birth]
+  );
+
+  const onSave = () => {
+    if (!canSubmit) return;
+
+    const payload = {
+      name: name.trim(),
+      calendar,
+      birth,     // "YYYYMMDD"
+      time,      // 'JA' | 'unknown' ...
+      gender,    // 'M' | 'F'
+      ts: Date.now(),
+    };
+
+    const json = encodeURIComponent(JSON.stringify(payload));
+
+    // 쿠키 1년 보존 (31536000초)
+    document.cookie =
+      `fortuneInfo=${json}; Path=/; Max-Age=31536000; SameSite=Lax`;
+
+    router.push('/result');
+  };
 
   return (
     <div className={styles.screen}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <button className={styles.back} aria-label="뒤로가기" onClick={() => history.back()}>‹</button>
+        <button className={styles.back} aria-label="뒤로가기" onClick={() => history.back()}>
+          ‹
+        </button>
         <h1 className={styles.title}>사주 정보</h1>
         <div className={styles.right} />
       </header>
@@ -42,7 +70,7 @@ export default function BirthInfoForm() {
             placeholder="이름을 입력해 주세요."
             value={name}
             onChange={(e) => setName(e.target.value)}
-            maxLength={10}
+            maxLength={30}
           />
         </div>
 
@@ -56,17 +84,23 @@ export default function BirthInfoForm() {
               className={`${styles.segmentBtn} ${calendar === 'SOLAR' ? styles.segmentActive : ''}`}
               aria-pressed={calendar === 'SOLAR'}
               onClick={() => setCalendar('SOLAR')}
-            >양력</button>
+            >
+              양력
+            </button>
             <button
               className={`${styles.segmentBtn} ${calendar === 'LUNAR_PLAIN' ? styles.segmentActive : ''}`}
               aria-pressed={calendar === 'LUNAR_PLAIN'}
               onClick={() => setCalendar('LUNAR_PLAIN')}
-            >음력(평달)</button>
+            >
+              음력(평달)
+            </button>
             <button
               className={`${styles.segmentBtn} ${calendar === 'LUNAR_LEAP' ? styles.segmentActive : ''}`}
               aria-pressed={calendar === 'LUNAR_LEAP'}
               onClick={() => setCalendar('LUNAR_LEAP')}
-            >음력(윤달)</button>
+            >
+              음력(윤달)
+            </button>
           </div>
         </div>
 
@@ -82,10 +116,7 @@ export default function BirthInfoForm() {
             pattern="\d*"
             maxLength={8}
             value={birth}
-            onChange={(e) => {
-              const v = e.target.value.replace(/\D/g, '').slice(0, 8);
-              setBirth(v);
-            }}
+            onChange={(e) => setBirth(e.target.value.replace(/\D/g, '').slice(0, 8))}
           />
         </div>
 
@@ -111,12 +142,16 @@ export default function BirthInfoForm() {
               className={`${styles.segmentBtn} ${gender === 'M' ? styles.segmentActive : ''}`}
               aria-pressed={gender === 'M'}
               onClick={() => setGender('M')}
-            >남자</button>
+            >
+              남자
+            </button>
             <button
               className={`${styles.segmentBtn} ${gender === 'F' ? styles.segmentActive : ''}`}
               aria-pressed={gender === 'F'}
               onClick={() => setGender('F')}
-            >여자</button>
+            >
+              여자
+            </button>
           </div>
         </div>
 
@@ -124,6 +159,7 @@ export default function BirthInfoForm() {
         <button
           className={`${styles.saveBtn} ${!canSubmit ? styles.saveDisabled : ''}`}
           disabled={!canSubmit}
+          onClick={onSave}
         >
           저장하기
         </button>
@@ -141,7 +177,7 @@ export default function BirthInfoForm() {
           value={time}
           onSelect={(v) => {
             setTime(v);
-            setOpenTimeSheet(false);
+            setOpenTimeSheet(false);              // 선택 즉시 닫힘(애니메이션)
           }}
         />
       </BottomSheet>
