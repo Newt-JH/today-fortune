@@ -1,0 +1,10 @@
+.list{ display:flex; flex-direction:column; gap:4px; padding-bottom:8px; }
+.item{
+  width:100%; text-align:left; background:#fff; border:1px solid #F0F0F5;
+  border-radius:12px; padding:14px 14px; display:flex; align-items:center; justify-content:space-between;
+  font-size:14px; color:var(--brand-text);
+}
+.item:hover{ background:#FAFAFF; }
+.active{ border-color: var(--brand-primary); }
+.check{ color: var(--brand-primary); font-weight:700; }
+.chev{ color:#C9CAD3; font-size:18px; }

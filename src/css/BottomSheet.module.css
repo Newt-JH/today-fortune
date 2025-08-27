@@ -1,0 +1,55 @@
+/* Overlay: 페이드 인/아웃 */
+.overlay{
+    position: fixed; inset: 0; z-index:1000;
+    display:flex; align-items:flex-end;
+    background: rgba(0,0,0,0);                 /* 초기 투명 */
+    transition: background .26s ease;
+  }
+  .overlayOpen{    background: rgba(0,0,0,.45); }
+  .overlayClosing{ background: rgba(0,0,0,0);   }
+  
+  /* Sheet: 기본은 화면 아래(100%) 대기 */
+  .sheet{
+    width:100%; background:#fff;
+    border-top-left-radius:16px; border-top-right-radius:16px;
+    box-shadow:0 -6px 20px rgba(0,0,0,.12);
+    max-height:60vh; overflow:hidden;
+    transform: translateY(100%);
+    transition: transform .26s cubic-bezier(.25,.8,.25,1);
+  }
+  
+  /* open: 위로 올라옴 */
+  .open{
+    transform: translateY(0);
+  }
+  
+  /* closing: 아래로 내려감 */
+  .closing{
+    transform: translateY(100%);
+  }
+  
+  /* Handle */
+  .handle{
+    width:44px; height:5px; background:#E5E7EB; border-radius:9999px;
+    margin:8px auto 6px;
+    touch-action:none; cursor:grab;
+  }
+  .handle:active{ cursor:grabbing; }
+  
+  /* Header */
+  .header{
+    padding:6px 16px 10px;
+    text-align:center;
+    font-weight:700;
+    font-size:14px;
+    color: var(--brand-text);
+    border-bottom:1px solid #F3F4F6;
+  }
+  
+  /* Body */
+  .body{
+    padding:8px 8px 12px;
+    overflow:auto;
+    max-height: calc(60vh - 40px);
+  }
+  

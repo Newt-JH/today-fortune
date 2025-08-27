@@ -1,0 +1,26 @@
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
+.card {
+  background: #fff;
+  border: 1px solid var(--brand-ring);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(17,24,39,0.06);
+  padding: 16px;
+}
+
+.h2 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+
+.muted { color: var(--brand-muted); font-size: 14px; }
+
+.cta {
+  width: 100%;
+  padding: 12px;
+  background: var(--brand-primary);
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cta:hover { opacity: 0.92; }

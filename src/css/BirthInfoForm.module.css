@@ -1,0 +1,142 @@
+/* 이 파일은 컴포넌트 로컬 스타일입니다.
+   전역 변수는 globals.css의 :root에서 정의하세요.
+   예) :root { --brand-primary:#7B61FF; --brand-bg:#fff; --brand-text:#111827; --brand-muted:#6B7280; --brand-ring:#E8E6FF; --radius-lg:16px; }
+*/
+
+.screen {
+    min-height: 100vh;
+    background: var(--brand-bg);
+    color: var(--brand-text);
+  }
+  
+  /* Topbar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    height: 48px;
+    padding: 0 8px;
+    background: rgba(255,255,255,0.9);
+    border-bottom: 1px solid var(--brand-ring);
+    backdrop-filter: blur(6px);
+  }
+  .back {
+    width: 32px; height: 32px;
+    border: 0; background: transparent; font-size: 22px; color: var(--brand-text);
+  }
+  .title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .right {}
+  
+  /* Main 컨테이너: 좌우 동일 패딩 -> 모든 컨트롤이 이 라인에 맞춰짐 */
+  .main {
+    padding: 16px;            /* ← 오른쪽 끝 라인 기준 */
+  }
+  
+  /* Field */
+  .field { margin-bottom: 16px; }
+  .label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .required { color: #d14a4a; margin-left: 2px; }
+  
+  /* 공통 컨트롤 폭/박스모델(오른쪽 라인 맞춤의 핵심) */
+  .input,
+  .pickerBtn,
+  .select,
+  .saveBtn {
+    width: 100%;
+    box-sizing: border-box;   /* padding/border 포함 100%로 계산 */
+  }
+  
+  /* Inputs */
+  .input {
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--brand-ring);
+    padding: 0 12px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    -webkit-appearance: none; /* iOS 기본 스타일 제거 */
+  }
+  .input::placeholder { color: var(--brand-muted); }
+  
+  /* Segment(토글 버튼 그룹) */
+  .segment {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;                 /* 좌우 간격도 동일하게 유지 */
+  }
+  .segmentBtn {
+    height: 36px;
+    border-radius: 9999px;
+    border: 1px solid var(--brand-ring);
+    background: #fff;
+    color: var(--brand-text);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 14px;
+    box-sizing: border-box;   /* 버튼도 라인 깨짐 방지 */
+  }
+  .segmentBtn[aria-pressed="true"],
+  .segmentActive {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    background: #fff;
+  }
+  
+  /* 모달 선택 트리거 버튼 (출생 시간) */
+  .pickerBtn {
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--brand-ring);
+    background: #fff;
+    padding: 0 12px;
+    font-size: 14px;
+    color: var(--brand-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pickerChev { color: var(--brand-muted); }
+  
+  /* (예전 셀렉트 사용 시 남겨두려면) */
+  .select {
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--brand-ring);
+    padding: 0 36px 0 12px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--brand-text);
+    outline: none;
+    appearance: none;
+  }
+  
+  /* Save */
+  .saveBtn {
+    height: 48px;
+    border: 0;
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--brand-primary);
+    margin-top: 24px;
+    cursor: pointer;
+  }
+  .saveDisabled {
+    background: #ECECEC;
+    color: #B7B7B7;
+    cursor: not-allowed;
+  }
+  
