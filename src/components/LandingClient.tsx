@@ -70,13 +70,27 @@ export default function LandingClient() {
     return () => clearInterval(t);
   }, [isComplete]);
 
-  // 광고: 5초 뒤 X 노출
+  // 광고: 카운트다운(5→1) 후 X 표시, X만 클릭 가능
   const [showAd, setShowAd] = useState(true);
   const [canCloseAd, setCanCloseAd] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+
   useEffect(() => {
-    const timer = setTimeout(() => setCanCloseAd(true), 5000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!showAd) return;
+    setCountdown(5);
+    setCanCloseAd(false);
+    const it = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(it);
+          setCanCloseAd(true);
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+    return () => clearInterval(it);
+  }, [showAd]);
 
   // CTA X 클릭 시 숨김
   const [hideCta, setHideCta] = useState(false);
@@ -89,14 +103,14 @@ export default function LandingClient() {
         ‹
       </button>
 
-      {/* ① 이미지 (상단) */}
+      {/* ① 이미지 (상단, 영역 고정) */}
       <section className={styles.hero}>
         {!isComplete ? (
           <Image
             src={cloverSrc}
             alt="행운 클로버"
-            width={256}
-            height={256}
+            width={110}
+            height={110}
             priority
             className={styles.heroImg}
           />
@@ -104,11 +118,11 @@ export default function LandingClient() {
           <Image
             src={FULL_CLOVER}
             alt="행운 클로버"
-            width={256}
-            height={256}
+            width={110}
+            height={110}
             priority
             className={styles.heroImg}
-          />
+        />
         )}
       </section>
 
@@ -138,11 +152,16 @@ export default function LandingClient() {
                 <div className={styles.adThumb} aria-hidden />
               </div>
 
-              {canCloseAd && (
+              {/* 카운트다운 → 0 되면 X 버튼 활성화 */}
+              {!canCloseAd ? (
+                <div className={styles.adCloseCountdown} aria-hidden="true">
+                  {countdown}
+                </div>
+              ) : (
                 <button
                   className={styles.adClose}
                   aria-label="광고 닫기"
-                  onClick={() => setShowAd(false)}
+                  onClick={() => router.push('/info')}
                 >
                   ×
                 </button>
@@ -166,7 +185,7 @@ export default function LandingClient() {
           <button
             className={styles.ctaClose}
             aria-label="하단 버튼 닫기"
-            onClick={() => setHideCta(true)}
+            onClick={() => router.push('/info')}
           >
             ×
           </button>
