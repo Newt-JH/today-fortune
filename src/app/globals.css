@@ -9,7 +9,18 @@
   --radius-lg: 16px;
 }
 
+/* 레이아웃 베이스 */
 html, body, #__next { height: 100%; }
+
+/* ✅ 전역 기본 여백 제거 + 폰트 지정(중복 통합) */
+html, body {
+  margin: 0;         /* ← 기본 여백 제거 */
+  padding: 0;        /* ← 혹시 모를 UA padding 제거 */
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui,
+               Roboto, 'Helvetica Neue', 'Segoe UI', Arial, 'Noto Sans KR',
+               sans-serif !important;
+}
+
 body {
   background: var(--brand-bg);
   color: var(--brand-text);
@@ -17,14 +28,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html, body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui,
-               Roboto, 'Helvetica Neue', 'Segoe UI', Arial, 'Noto Sans KR',
-               sans-serif !important;
-}
+/* 권장: 전체 박스 모델 일관화 (가로 넘침 줄임) */
+*, *::before, *::after { box-sizing: border-box; }
 
 /* 공통 프레임(모바일 폭 제한) */
 .app-frame { width: 100%; max-width: 420px; margin: 0 auto; }
 
 /* iOS Safe Area */
-.safe-area { padding-bottom: constant(safe-area-inset-bottom); padding-bottom: env(safe-area-inset-bottom); }
+.safe-area {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}

@@ -1,0 +1,168 @@
+/* 뷰포트 그리드: 20vh(상단 여백) → Hero(이미지) → [중간 공간 1fr] → Copy(문구) → Ad(광고) → [아래 공간 1fr] → CTA */
+.screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 20vh auto 1fr auto auto 1fr auto;
+  /* rows: [1]top 20vh, [2]hero, [3]gap, [4]copy, [5]ad, [6]gap, [7]cta */
+  justify-items: center;
+  align-items: start;
+
+  padding: 0 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  background: var(--brand-bg);
+  color: var(--brand-text);
+  overflow: clip;
+}
+@supports not (overflow: clip) { .screen { overflow: hidden; } }
+
+/* 좌상단 뒤로가기 */
+.back {
+  position: absolute;
+  top: 12px; left: 10px;
+  width: 32px; height: 32px;
+  border: 0; background: transparent;
+  font-size: 22px; color: var(--brand-text);
+}
+
+/* ① Hero(이미지) — "원래 위치" 유지 */
+.hero {
+  grid-row: 2;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.heroImg {
+  width: 35vw;    /* 화면 가로의 30% */
+  height: auto;
+  display: block;
+}
+
+/* ② Copy(문구) — 이미지와 광고 사이의 "정가운데" */
+.copy {
+  grid-row: 3;                /* hero(2)와 ad(5) 사이 */
+  width: min(420px, 100%);
+  text-align: center;
+  place-self: center;           /* 해당 행에서 수직/수평 중앙 */
+}
+.percent { margin: 6px 0 6px; font-size: 20px; font-weight: 800; color: #1f9d55; letter-spacing: .2px; }
+.captionTitle { font-size: 18px; font-weight: 600; margin: 0; }
+.captionDesc  { margin: 10px 0 0; font-weight: 400; font-size: 14px; color: var(--brand-muted); line-height: 1.5; }
+
+/* ③ Ad(광고) — "변경 전 위치" 유지 */
+.adSection {
+  grid-row: 6;
+  width: min(420px, 90%);
+}
+
+/* 광고 카드: 텍스트가 오른쪽 썸네일을 침범하지 않도록 오른쪽 패딩 확보 */
+.adCard {
+  --thumbW: 72px;           /* 썸네일 가로폭 (필요시 조절) */
+  --thumbGap: 12px;         /* 텍스트-썸네일 간격 */
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--brand-ring);
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px calc(var(--thumbW) + var(--thumbGap) + 20px) 12px 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  overflow: visible;        /* X 버튼이 카드 바깥으로 걸려도 보이게 */
+}
+.adLeft { flex: 1; }
+
+.adBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: #e6f4ff;
+  color: #0b5cab;
+  margin-bottom: 6px;
+}
+
+/* 제목이 썸네일까지 넘어가지 않게 줄바꿈 강제 */
+.adTitle {
+  font-size: 13px;
+  color: #111827;
+  font-weight: 600;
+  line-height: 1.45;
+  white-space: normal;        /* 줄바꿈 허용 */
+  overflow-wrap: break-word;  /* 긴 단어 줄바꿈 */
+  word-break: keep-all;       /* 한글 단어 단위 줄바꿈 */
+}
+
+/* 오른쪽 썸네일(더미) */
+.adThumb {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--thumbW);
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #eee, #ddd);
+}
+
+/* 광고 X 버튼: 가운데가 우측 상단 모서리에 오도록 */
+.adClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%); /* 코너 중앙 정렬 */
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 20px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+/* 고지문(광고 바로 아래) */
+.partnerNote {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+  padding: 0 8px;
+}
+
+/* ④ CTA (하단) + X 버튼 */
+.ctaWrap {
+  grid-row: 7;
+  position: relative;
+  width: min(420px, 100%);
+  height: 48px;
+}
+.ctaBtn {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 13px; /* 규칙: 주요 버튼 13px */
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--brand-primary);
+  cursor: pointer;
+}
+.ctaClose {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%); /* 코너 중앙 정렬 */
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: 20px;
+  line-height: 24px;
+  cursor: pointer;
+}

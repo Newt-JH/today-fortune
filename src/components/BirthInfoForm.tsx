@@ -9,6 +9,25 @@ import TimePickerSheet, { getTimeLabel } from '@/components/TimePickerSheet';
 type CalendarType = 'SOLAR' | 'LUNAR_PLAIN' | 'LUNAR_LEAP';
 type Gender = 'M' | 'F';
 
+// YYYYMMDD → 실제 날짜 유효성 체크
+function isValidYmd(ymd: string) {
+  if (!/^\d{8}$/.test(ymd)) return false;
+  const y = Number(ymd.slice(0, 4));
+  const m = Number(ymd.slice(4, 6));
+  const d = Number(ymd.slice(6, 8));
+
+  if (m < 1 || m > 12) return false;
+
+  // 로컬 타임존 보정 이슈를 피하려면 UTC Date를 써도 되지만,
+  // 여기서는 간단히 일반 Date로 검증합니다.
+  const date = new Date(y, m - 1, d);
+  return (
+    date.getFullYear() === y &&
+    date.getMonth() === m - 1 &&
+    date.getDate() === d
+  );
+}
+
 export default function BirthInfoForm() {
   const router = useRouter();
 
@@ -21,9 +40,9 @@ export default function BirthInfoForm() {
   const [openTimeSheet, setOpenTimeSheet] = useState(false);
   const sheetRef = useRef<BottomSheetHandle>(null);
 
-  // 필수값 충족 시 활성화: 이름 + 생년월일(8자리)
+  // 필수값 충족 시 활성화: 이름 + 생년월일(YYYYMMDD & 실제 존재 날짜)
   const canSubmit = useMemo(
-    () => name.trim().length > 0 && /^\d{8}$/.test(birth),
+    () => name.trim().length > 0 && isValidYmd(birth),
     [name, birth]
   );
 
@@ -45,7 +64,7 @@ export default function BirthInfoForm() {
     document.cookie =
       `fortuneInfo=${json}; Path=/; Max-Age=31536000; SameSite=Lax`;
 
-    router.push('/result');
+    router.push('/landing');
   };
 
   return (
