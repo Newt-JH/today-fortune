@@ -48,14 +48,53 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
 .luckyGrid dd { font-weight:700; font-size:14px; }
 
 /* 레이더 */
-.radarWrap { position:relative; height:240px; margin-top:4px; }
 .scoreBadge { position:absolute; right:8px; top:8px; background:#F5F3FF; color:#7C3AED;
 border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+.radarWrap{
+    position: relative;
+    height: 320px;  /* 260px → 320px으로 키움 */
+    margin-top: 12px;
+  }
+  
+  /* 점수 배지를 위쪽 중앙으로 */
+  .scoreBadgeTop{
+    position: absolute;
+    top: 6px;           /* 10px → 6px : 차트 위에서 살짝만 띄움 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #D0B3FF;
+    color: #ffffff;
+    border: 1px solid #DDD6FE;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+  }
 
 /* 탭 */
-.tabRow { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; padding:0 4px; }
-.tab { padding:6px 10px; font-size:12px; border-radius:999px; border:1px solid #E9EAF0; background:#F9FAFB; color:#334155; }
-.tabActive { background:#F5F3FF; color:#7C3AED; border-color:#E9D5FF; font-weight:700; }
+.tabRow{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6등분 */
+    gap: 8px;
+    margin-top: 20px;
+    padding: 0 12px; /* 좌우 살짝 여백(원하면 0으로) */
+  }
+  .tab{
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;              /* 높이 통일 */
+    font-size: 12px;
+    border-radius: 999px;
+    border: 1px solid #E9EAF0;
+    background: #F9FAFB;
+    color: #334155;
+  }
+  .tabActive{
+    background:#F5F3FF;
+    color:#7C3AED;
+    border-color:#E9D5FF;
+    font-weight:700;
+  }
 
 /* 상세 텍스트 */
 .detailText { margin-top:10px; font-size:14px; line-height:1.8; color:#374151; white-space:normal; padding:0 2px; }

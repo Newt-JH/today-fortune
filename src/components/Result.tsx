@@ -149,34 +149,45 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 
 // ===== 레이더 =====
 function RadarBlock({
-  data,
-  badge,
-}: {
-  data: ResultData["radar"];
-  badge?: number;
-}) {
-  return (
-    <div className={styles.radarWrap}>
-      {typeof badge === "number" && (
-        <div className={styles.scoreBadge}>{badge}점</div>
-      )}
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid />
-          <PolarAngleAxis dataKey="name" tick={{ fontSize: 12 }} />
-          <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-          <Radar
-            name="오늘"
-            dataKey="value"
-            stroke="#7C3AED"
-            fill="#7C3AED"
-            fillOpacity={0.28}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
+    data,
+    badge,
+  }: {
+    data: ResultData["radar"];
+    badge?: number;
+  }) {
+    return (
+      <div className={styles.radarWrap}>
+        {/* 점수 배지를 차트 위쪽 중앙으로 */}
+        {typeof badge === "number" && (
+          <div className={styles.scoreBadgeTop}>{badge}점</div>
+        )}
+        <ResponsiveContainer width="100%" height="100%">
+            <RadarChart
+                cx="50%"
+                cy="62%"                // 차트 조금 내림
+                outerRadius="95%"       // 90% → 95% (크게)
+                data={data}
+                margin={{ top: 60, right: 20, bottom: 20, left: 20 }}
+            >
+                <PolarGrid stroke="#E5E7EB" />
+                <PolarAngleAxis
+                dataKey="name"
+                tick={{ fontSize: 13, fill: "#6B7280" }}
+                tickFormatter={(v: string) => (v === "총운" ? "총운" : v.replace("운", ""))}
+                />
+                <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} tickCount={5} />
+                <Radar
+                name="오늘"
+                dataKey="value"
+                stroke="#8B5CF6"
+                fill="#8B5CF6"
+                fillOpacity={0.3}
+                />
+            </RadarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }  
 
 // ===== 주간 바차트 =====
 function WeeklyBar({
