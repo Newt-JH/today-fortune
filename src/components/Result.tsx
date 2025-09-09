@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, memo, useCallback } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import styles from "../css/Result.module.css";
 import {
   Radar,
@@ -17,11 +17,17 @@ import {
   XAxis,
   YAxis,
   Cell,
-  LabelList
+  LabelList,
 } from "recharts";
 
 // ===== 타입 =====
-export type CategoryKey = "총운" | "재물운" | "애정운" | "소망운" | "직장운" | "방위운";
+export type CategoryKey =
+  | "총운"
+  | "재물운"
+  | "애정운"
+  | "소망운"
+  | "직장운"
+  | "방위운";
 export type ResultData = {
   dateLabel: string;
   score: number;
@@ -39,9 +45,17 @@ export type ResultData = {
   weekly: { label: string; value: number }[];
 };
 
+// ✅ MOCK 위 어딘가에 추가
+const TODAY_DATE_LABEL =
+  new Intl.DateTimeFormat("ko-KR", {
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Seoul",
+  }).format(new Date());
+
 // ===== 목업 데이터 (서버 연동 전) =====
 const MOCK: ResultData = {
-  dateLabel: "8월 19일 운세 점수",
+  dateLabel: TODAY_DATE_LABEL,
   score: 72,
   tagline: "오늘 하루, 나를 비추는 행운은?\n운세 보고 포인트도 받아요!",
   lucky: {
@@ -52,13 +66,13 @@ const MOCK: ResultData = {
     place: "카페",
     flower: "벚꽃",
   },
-    radar: [
+  radar: [
     { name: "총운", value: 72 },
     { name: "재물운", value: 76 },
     { name: "애정운", value: 70 },
     { name: "직장운", value: 68 },
     { name: "소망운", value: 65 },
-    { name: "방위운", value: 72 }
+    { name: "방위운", value: 72 },
   ],
   categories: {
     총운: {
@@ -131,7 +145,7 @@ const MOCK: ResultData = {
         "길운을 따라 움직이면 작은 행운이 크게 불어날 수 있습니다. " +
         "오늘 하루는 방향이 당신의 운세를 결정짓는 중요한 열쇠가 될 것입니다.",
     },
-  },  
+  },
   weekly: [
     { label: "일", value: 85 },
     { label: "월", value: 96 },
@@ -153,99 +167,112 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 
 // ===== 레이더 =====
 function RadarBlock({
-    data,
-    badge,
-  }: {
-    data: ResultData["radar"];
-    badge?: number;
-  }) {
-    return (
-      <div className={styles.radarWrap}>
-        {/* 점수 배지를 차트 위쪽 중앙으로 */}
-        {typeof badge === "number" && (
-          <div className={styles.scoreBadgeTop}>{badge}점</div>
-        )}
-        <ResponsiveContainer width="100%" height="100%">
-            <RadarChart
-                cx="50%"
-                cy="62%"                // 차트 조금 내림
-                outerRadius="95%"       // 90% → 95% (크게)
-                data={data}
-                margin={{ top: 60, right: 20, bottom: 20, left: 20 }}
-            >
-                <PolarGrid stroke="#E5E7EB" />
-                <PolarAngleAxis
-                dataKey="name"
-                tick={{ fontSize: 13, fill: "#6B7280" }}
-                tickFormatter={(v: string) => (v === "총운" ? "총운" : v.replace("운", ""))}
-                />
-                <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} tickCount={5} />
-                <Radar
-                name="오늘"
-                dataKey="value"
-                stroke="#8B5CF6"
-                fill="#8B5CF6"
-                fillOpacity={0.3}
-                />
-            </RadarChart>
-        </ResponsiveContainer>
-      </div>
-    );
-  }  
+  data,
+  badge,
+}: {
+  data: ResultData["radar"];
+  badge?: number;
+}) {
+  return (
+    <div className={styles.radarWrap}>
+      {/* 점수 배지를 차트 위쪽 중앙으로 */}
+      {typeof badge === "number" && (
+        <div className={styles.scoreBadgeTop}>{badge}점</div>
+      )}
+      <ResponsiveContainer width="100%" height="100%">
+        <RadarChart
+          cx="50%"
+          cy="62%" // 차트 조금 내림
+          outerRadius="95%" // 90% → 95% (크게)
+          data={data}
+          margin={{ top: 60, right: 20, bottom: 20, left: 20 }}
+        >
+          <PolarGrid stroke="#E5E7EB" />
+          <PolarAngleAxis
+            dataKey="name"
+            tick={{ fontSize: 13, fill: "#6B7280" }}
+            tickFormatter={(v: string) =>
+              v === "총운" ? "총운" : v.replace("운", "")
+            }
+          />
+          <PolarRadiusAxis
+            domain={[0, 100]}
+            tick={false}
+            axisLine={false}
+            tickCount={5}
+          />
+          <Radar
+            name="오늘"
+            dataKey="value"
+            stroke="#8B5CF6"
+            fill="#8B5CF6"
+            fillOpacity={0.3}
+          />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
 
 // ===== 주간 바차트 =====
 const WeeklyBar = memo(function WeeklyBar({
-    data,
-    highlightLabel,
-  }: {
-    data: ResultData["weekly"];
-    highlightLabel: string; // 오늘 요일 ("일"~"토")
-  }) {
-    // 라벨 렌더러 메모
-    const renderLabel = useCallback(
-      (props: any) => {
-        const { x, y, width, value, index } = props;
-        const cx = x + width / 2;
-        const isToday = data[index].label === highlightLabel;
-        return (
-          <text
-            x={cx}
-            y={y - 6}
-            textAnchor="middle"
-            fontSize={12}
-            fontWeight={700}
-            fill={isToday ? "#7C3AED" : "#6B7280"}
+  data,
+  highlightLabel,
+}: {
+  data: ResultData["weekly"];
+  highlightLabel: string; // 오늘 요일 ("일"~"토")
+}) {
+  // 라벨 렌더러 메모
+  const renderLabel = useCallback(
+    (props: any) => {
+      const { x, y, width, value, index } = props;
+      const cx = x + width / 2;
+      const isToday = data[index].label === highlightLabel;
+      return (
+        <text
+          x={cx}
+          y={y - 6}
+          textAnchor="middle"
+          fontSize={12}
+          fontWeight={700}
+          fill={isToday ? "#7C3AED" : "#6B7280"}
+        >
+          {value}
+        </text>
+      );
+    },
+    [data, highlightLabel]
+  );
+
+  return (
+    <div className={styles.weeklyWrap}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={data}
+          margin={{ top: 20, right: 8, left: 8, bottom: 0 }}
+        >
+          <XAxis dataKey="label" tickLine={false} axisLine={false} />
+          <YAxis hide domain={[0, 100]} />
+          <Bar
+            dataKey="value"
+            radius={[6, 6, 0, 0]}
+            isAnimationActive={false} // ← 여기서만 애니메이션 OFF
+            animationDuration={0}
           >
-            {value}
-          </text>
-        );
-      },
-      [data, highlightLabel]
-    );
-  
-    return (
-      <div className={styles.weeklyWrap}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 0 }}>
-            <XAxis dataKey="label" tickLine={false} axisLine={false} />
-            <YAxis hide domain={[0, 100]} />
-            <Bar
-              dataKey="value"
-              radius={[6, 6, 0, 0]}
-              isAnimationActive={false}   // ← 여기서만 애니메이션 OFF
-              animationDuration={0}
-            >
-              {data.map((e, i) => (
-                <Cell key={i} fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"} />
-              ))}
-              <LabelList dataKey="value" content={renderLabel} />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    );
-  });
-  export { WeeklyBar };
+            {data.map((e, i) => (
+              <Cell
+                key={i}
+                fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"}
+              />
+            ))}
+            <LabelList dataKey="value" content={renderLabel} />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+});
+export { WeeklyBar };
 
 // ===== 3줄 미리보기 + 펼쳐보기 =====
 function ExpandableText({
@@ -317,77 +344,104 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
       <main className={styles.body}>
         {/* 상단 히어로 (풀블리드 흰 배경) */}
         <div className={styles.heroSection}>
-        <div className={styles.hero}>
-            <Chip>{data.dateLabel}</Chip>
+          <div className={styles.hero}>
+            <Chip>{data.dateLabel} 운세 점수</Chip>
             <div className={styles.heroScore}>{data.score}점</div>
             <div className={styles.heroRow}>
-            <div className={styles.heroIcon}>
-                <img src="/icon/icon_sun.png" alt="sun icon" className={styles.heroIconImg} />
-            </div>
-            <p className={styles.heroText}>
+              <div className={styles.heroIcon}>
+                <img
+                  src="/icon/icon_sun.png"
+                  alt="sun icon"
+                  className={styles.heroIconImg}
+                />
+              </div>
+              <p className={styles.heroText}>
                 오늘 하루, 나를 비추는 행운은?
                 <br />
                 운세 보고 포인트도 받아요!
-            </p>
+              </p>
             </div>
-        </div>
+          </div>
         </div>
 
         {/* 오늘의 행운 (풀블리드 카드) */}
         <SectionCard>
-            <h2 className={styles.sectionTitle}>오늘의 행운</h2>
+          <h2 className={styles.sectionTitle}>오늘의 행운</h2>
 
-            <div className={styles.luckyGrid}>
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_number7.png" alt="행운의 숫자" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 숫자</div>
-                    <div className={styles.luckyValue}>{data.lucky.numbers}</div>
-                </div>
-                </div>
-
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_compass.png" alt="행운의 방향" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 방향</div>
-                    <div className={styles.luckyValue}>{data.lucky.direction}</div>
-                </div>
-                </div>
-
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_diamond.png" alt="행운의 보석" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 보석</div>
-                    <div className={styles.luckyValue}>{data.lucky.gem}</div>
-                </div>
-                </div>
-
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_rainbow.png" alt="행운의 색깔" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 색깔</div>
-                    <div className={styles.luckyValue}>{data.lucky.color}</div>
-                </div>
-                </div>
-
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_location.png" alt="행운의 장소" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 장소</div>
-                    <div className={styles.luckyValue}>{data.lucky.place}</div>
-                </div>
-                </div>
-
-                <div className={styles.luckyItem}>
-                <img src="/icon/icon_flower.png" alt="행운의 꽃" className={styles.luckyIcon} />
-                <div className={styles.luckyTexts}>
-                    <div className={styles.luckyTitle}>행운의 꽃</div>
-                    <div className={styles.luckyValue}>{data.lucky.flower}</div>
-                </div>
-                </div>
+          <div className={styles.luckyGrid}>
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_number7.png"
+                alt="행운의 숫자"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 숫자</div>
+                <div className={styles.luckyValue}>{data.lucky.numbers}</div>
+              </div>
             </div>
-        </SectionCard>
 
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_compass.png"
+                alt="행운의 방향"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 방향</div>
+                <div className={styles.luckyValue}>{data.lucky.direction}</div>
+              </div>
+            </div>
+
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_diamond.png"
+                alt="행운의 보석"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 보석</div>
+                <div className={styles.luckyValue}>{data.lucky.gem}</div>
+              </div>
+            </div>
+
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_rainbow.png"
+                alt="행운의 색깔"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 색깔</div>
+                <div className={styles.luckyValue}>{data.lucky.color}</div>
+              </div>
+            </div>
+
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_location.png"
+                alt="행운의 장소"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 장소</div>
+                <div className={styles.luckyValue}>{data.lucky.place}</div>
+              </div>
+            </div>
+
+            <div className={styles.luckyItem}>
+              <img
+                src="/icon/icon_flower.png"
+                alt="행운의 꽃"
+                className={styles.luckyIcon}
+              />
+              <div className={styles.luckyTexts}>
+                <div className={styles.luckyTitle}>행운의 꽃</div>
+                <div className={styles.luckyValue}>{data.lucky.flower}</div>
+              </div>
+            </div>
+          </div>
+        </SectionCard>
 
         {/* 오늘의 운세 상세 (풀블리드 카드) */}
         <SectionCard>
@@ -397,25 +451,36 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
           <RadarBlock data={data.radar} badge={activeScore} />
 
           {/* 탭 */}
-            {/* 탭 */}
-            <div className={styles.tabRow}>
-            {(["총운", "재물운", "애정운", "소망운", "직장운", "방위운"] as CategoryKey[]).map((k) => {
-                // 보여지는 라벨: 총운은 그대로, 나머지는 "운" 제거
-                const label = k === "총운" ? "총운" : k.replace("운", "");
-                return (
+          {/* 탭 */}
+          <div className={styles.tabRow}>
+            {(
+              [
+                "총운",
+                "재물운",
+                "애정운",
+                "소망운",
+                "직장운",
+                "방위운",
+              ] as CategoryKey[]
+            ).map((k) => {
+              // 보여지는 라벨: 총운은 그대로, 나머지는 "운" 제거
+              const label = k === "총운" ? "총운" : k.replace("운", "");
+              return (
                 <button
-                    key={k}
-                    className={`${styles.tab} ${active === k ? styles.tabActive : ""}`}
-                    onClick={() => {
+                  key={k}
+                  className={`${styles.tab} ${
+                    active === k ? styles.tabActive : ""
+                  }`}
+                  onClick={() => {
                     setActive(k);
                     setExpanded(false);
-                    }}
+                  }}
                 >
-                    {label}
+                  {label}
                 </button>
-                );
+              );
             })}
-            </div>
+          </div>
 
           {/* 3줄 미리보기 + 펼쳐보기 */}
           <ExpandableText
@@ -448,57 +513,98 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         {/* 이번 주 점수 (풀블리드 카드) */}
         <SectionCard>
           <h2 className={styles.sectionTitle}>이번 주 운세 점수는?</h2>
-                  <WeeklyBar
-                      data={data.weekly}
-                      highlightLabel={new Intl.DateTimeFormat("ko-KR", {
-                      weekday: "short",
-                      timeZone: "Asia/Seoul",
-                    }).format(new Date())} />
+          <WeeklyBar
+            data={data.weekly}
+            highlightLabel={new Intl.DateTimeFormat("ko-KR", {
+              weekday: "short",
+              timeZone: "Asia/Seoul",
+            }).format(new Date())}
+          />
         </SectionCard>
 
         {/* 다른 운세 보러가기 (풀블리드 카드) */}
-              <SectionCard>
-              <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
-            <div className={styles.moreCenter}>
-                    <div className={styles.moreList}>
-                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                            <img src="/icon/icon_calendar.png" alt="월간 운세" className={styles.moreIcon} />
-                        <div>
-                            <div className={styles.moreTitle}>월간 운세</div>
-                            <div className={styles.moreDesc}>이번 달 나의 행운은 어디서 올까?</div>
-                        </div>
-                        </div>
-                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                            <img src="/icon/icon_clover.png" alt="연간 운세" className={styles.moreIcon} />
-                        <div>
-                            <div className={styles.moreTitle}>연간 운세</div>
-                            <div className={styles.moreDesc}>올 한 해 나의 행운 포인트는?</div>
-                        </div>
-                        </div>
-                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                            <img src="/icon/icon_coin.png" alt="재물운" className={styles.moreIcon} />
-                        <div>
-                            <div className={styles.moreTitle}>재물운</div>
-                            <div className={styles.moreDesc}>나를 기다리는 재물의 기운은 어디에?</div>
-                        </div>
-                        </div>
-                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                            <img src="/icon/icon_heart.png" alt="애정운" className={styles.moreIcon} />
-                        <div>
-                            <div className={styles.moreTitle}>애정운</div>
-                            <div className={styles.moreDesc}>나의 인연은 어디에 있을까?</div>
-                        </div>
-                        </div>
-                            </div>
-                      </div>
+        <SectionCard>
+          <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
+          <div className={styles.moreCenter}>
+            <div className={styles.moreList}>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/landing")}
+              >
+                <img
+                  src="/icon/icon_calendar.png"
+                  alt="월간 운세"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>월간 운세</div>
+                  <div className={styles.moreDesc}>
+                    이번 달 나의 행운은 어디서 올까?
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/landing")}
+              >
+                <img
+                  src="/icon/icon_clover.png"
+                  alt="연간 운세"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>연간 운세</div>
+                  <div className={styles.moreDesc}>
+                    올 한 해 나의 행운 포인트는?
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/landing")}
+              >
+                <img
+                  src="/icon/icon_coin.png"
+                  alt="재물운"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>재물운</div>
+                  <div className={styles.moreDesc}>
+                    나를 기다리는 재물의 기운은 어디에?
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/landing")}
+              >
+                <img
+                  src="/icon/icon_heart.png"
+                  alt="애정운"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>애정운</div>
+                  <div className={styles.moreDesc}>
+                    나의 인연은 어디에 있을까?
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </SectionCard>
 
-            {/* CTA (이미지 버튼) */}
-            <div className={styles.ctaWrap} onClick={() => router.push('/info')}>
-            <button className={styles.ctaBtn}>
-                <img src="/changeButton.png" alt="사주정보 변경하기" className={styles.ctaImg} />
-            </button>
-            </div>
+        {/* CTA (이미지 버튼) */}
+        <div className={styles.ctaWrap} onClick={() => router.push("/info")}>
+          <button className={styles.ctaBtn}>
+            <img
+              src="/changeButton.png"
+              alt="사주정보 변경하기"
+              className={styles.ctaImg}
+            />
+          </button>
+        </div>
       </main>
     </div>
   );

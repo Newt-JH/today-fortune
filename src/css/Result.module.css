@@ -22,10 +22,10 @@ margin:0 -16px 12px;
 /* 히어로 내부 */
 .hero { display:grid; place-items:center; gap:12px; }
 /* 날짜 배지 – 연보라 */
-.chip { display:inline-block; background:#F5F3FF; color:#6D28D9; border:1px solid #E9D5FF;
-padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+.chip { display:inline-block; background:#8D55E8; color:#ffffff; border:1px solid #E9D5FF;
+padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
 /* 점수 – 더 두껍게 */
-.heroScore { font-size:48px; font-weight:900; letter-spacing:-0.02em; }
+.heroScore { font-size:36px; font-weight:600; letter-spacing:-0.02em; }
 /* 아이콘+문구 중앙 정렬, 문구도 중앙 정렬 */
 .heroRow { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; }
 .heroIcon {
