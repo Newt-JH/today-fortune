@@ -6,7 +6,15 @@
 .backBtn { background:transparent; border:none; outline:none; width:auto; height:auto; padding:0;font-size:20px; font-weight:700; line-height:1; color:#333; cursor:pointer; }
 .headerTitle { flex:1; text-align:center; font-weight:700; font-size:16px; }
 .headerSpacer { width:20px; height:20px; }
-.body { max-width:420px; margin:0 auto; padding:0 16px 24px; } /* 위 여백 제거 */
+.body{
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 16px;        /* 하단 패딩 제거 */
+  /* ⬇️ 내부에서 flex column */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 /* 카드/섹션 — 풀블리드(양쪽 꽉 차게) */
 .card {
@@ -244,25 +252,26 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     padding: 20px 0 40px;
   }
   
+
 /* 마지막 카드(CTA)와 하단 흰 배경이 자연스럽게 이어지도록 */
 .card:last-of-type { margin-bottom: 0; }
 
-/* 하단 풀블리드 흰 바닥 */
-.bottomWhite {
-  margin: 0 -16px;             /* body 좌우 패딩 무시 → 화면 가득 */
+/* 하단 풀블리드 흰 바닥 — 화면 남는 높이 모두 차지 */
+.bottomWhite{
+  margin: 0 -16px;                       /* 좌우 풀블리드 */
   background: #fff;
-  padding-bottom: max(32px, env(safe-area-inset-bottom)); /* 하단 여백 + iOS safe area */
-  /* 페이지가 짧아도 느낌 좋게 약간의 높이 확보 */
-  min-height: 64px;
+  flex: 1;                               /* ⬅️ 남는 공간 전부 흰색으로 채움 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 6px); /* 안전영역 + 살짝 */
+  min-height: 0;                         /* 불필요한 최소 높이 제거 */
 }
 
-/* CTA 내부 기존 정렬 */
-.ctaCenter {
+/* CTA 여백도 타이트하게 */
+.ctaCenter{
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 8px 0 10px;   /* 버튼 아래 살짝만 */
   max-width: 340px;
   margin: 0 auto;
 }
-.ctaBtn { background:none; border:none; padding:0; cursor:pointer; }
-.ctaImg { display:block; width:320px; height:auto; }
+.ctaBtn{ background:none; border:none; padding:0; cursor:pointer; }
+.ctaImg{ display:block; width:320px; height:auto; }
