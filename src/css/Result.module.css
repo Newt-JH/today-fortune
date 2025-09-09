@@ -1,0 +1,93 @@
+/* 화면/공통 */
+.screen { min-height:100vh; background:#FAFAFB; color:#111827;
+    font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; }
+.header { position:sticky; top:0; z-index:10; background:#fff; backdrop-filter:blur(8px); border-bottom:0; }
+.headerInner { max-width:420px; margin:0 auto; height:52px; display:flex; align-items:center; padding:0 16px; }
+.backBtn { background:transparent; border:none; outline:none; width:auto; height:auto; padding:0;font-size:20px; font-weight:700; line-height:1; color:#333; cursor:pointer; }
+.headerTitle { flex:1; text-align:center; font-weight:700; font-size:16px; }
+.headerSpacer { width:20px; height:20px; }
+.body { max-width:420px; margin:0 auto; padding:0 16px 24px; } /* 위 여백 제거 */
+
+/* 카드/섹션 — 풀블리드(양쪽 꽉 차게) */
+.card {
+background:#fff; border:1px solid #EDEEF0; border-radius:16px; padding:16px;
+box-shadow:0 6px 24px rgba(17,24,39,0.04);
+/* body 패딩(16px)을 무시하고 화면 가득 채우기 */
+margin:0 -16px 12px;
+}
+
+/* 히어로 카드 */
+.heroCard { padding:20px 16px; } /* 상단은 여백 조금 넉넉히 */
+
+/* 히어로 내부 */
+.hero { display:grid; place-items:center; gap:12px; }
+/* 날짜 배지 – 연보라 */
+.chip { display:inline-block; background:#F5F3FF; color:#6D28D9; border:1px solid #E9D5FF;
+padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+/* 점수 – 더 두껍게 */
+.heroScore { font-size:48px; font-weight:900; letter-spacing:-0.02em; }
+/* 아이콘+문구 중앙 정렬, 문구도 중앙 정렬 */
+.heroRow { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; }
+.heroIcon { width:72px; height:48px; border-radius:10px; background:linear-gradient(180deg,#FFEAB6,#FFFFFF); border:1px solid #F3DDA1; }
+.heroText { font-size:14px; line-height:1.6; color:#374151; text-align:center; white-space:pre-line; }
+/* 히어로 섹션 – 화면 가득 흰 배경 */
+.heroSection {
+      background:#fff;
+      margin:0 -16px 12px;   /* 좌우 풀블리드 */
+      padding:20px 16px;
+      box-shadow:0 6px 24px rgba(17,24,39,0.04);
+    }
+
+/* 공통 섹션 제목 */
+.sectionTitle { font-size:20px; font-weight:600; margin-bottom:12px; }
+
+/* 오늘의 행운 */
+.luckyGrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.luckyGrid dl { display:grid; gap:4px; border:1px solid #EDEEF0; border-radius:12px; padding:10px; background:#FCFCFD; }
+.luckyGrid dt { font-size:12px; font-weight:400; color:#6B7280; }
+.luckyGrid dd { font-weight:700; font-size:14px; }
+
+/* 레이더 */
+.radarWrap { position:relative; height:240px; margin-top:4px; }
+.scoreBadge { position:absolute; right:8px; top:8px; background:#F5F3FF; color:#7C3AED;
+border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+
+/* 탭 */
+.tabRow { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; padding:0 4px; }
+.tab { padding:6px 10px; font-size:12px; border-radius:999px; border:1px solid #E9EAF0; background:#F9FAFB; color:#334155; }
+.tabActive { background:#F5F3FF; color:#7C3AED; border-color:#E9D5FF; font-weight:700; }
+
+/* 상세 텍스트 */
+.detailText { margin-top:10px; font-size:14px; line-height:1.8; color:#374151; white-space:normal; padding:0 2px; }
+.clamp3 { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.expandWrap { display:grid; place-items:center; margin-top:12px; padding:0 16px; }
+.outlineBtn { width:100%; height:44px; border-radius:13px; border:1px solid #D1D5DB; background:#fff; font-weight:700; }
+
+/* 쿠팡 배너 */
+.coupangBox { margin-top:14px; border:1px solid #EDEEF0; border-radius:14px; padding:10px; background:#FFFEFF; }
+.coupangHead { font-size:13px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.adBadge { font-size:10px; padding:2px 6px; background:#FFF1F2; color:#E11D48; border:1px solid #FFE4E6; border-radius:999px; }
+.coupangItem { display:flex; align-items:center; gap:10px; }
+.coupangThumb { width:56px; height:56px; border-radius:10px; background:linear-gradient(145deg,#F1F5F9,#E2E8F0); border:1px solid #EDEEF0; flex:0 0 auto; }
+.coupangMeta { display:grid; gap:3px; }
+.coupangTitle { font-size:13px; font-weight:700; line-height:1.4; }
+.coupangSub { font-size:12px; color:#6B7280; }
+.coupangGo { margin-left:auto; font-size:22px; color:#9CA3AF; }
+
+/* 주간 바 차트 */
+.weeklyWrap { height:160px; }
+
+/* 다른 운세 보러가기 */
+.moreList { display:grid; gap:8px; }
+.moreItem { display:flex; gap:12px; align-items:center; padding:10px; border:1px solid #EDEEF0; border-radius:16px; }
+
+/* 이모지/텍스트 */
+.emoji { font-size:22px; }
+.moreTitle { font-weight:800; font-size:14px; }
+.moreDesc { font-size:12px; color:#6B7280; }
+
+/* CTA */
+.ctaWrap { padding:12px 0 20px; }
+.ctaBtn { width:100%; height:46px; border-radius:13px; background:#111827; color:#fff; font-weight:800;
+/* 버튼도 화면 꽉 채워 보이도록 카드와 간격 맞춤 */
+margin:0 -16px; }
