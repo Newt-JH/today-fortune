@@ -457,28 +457,28 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         <SectionCard>
             <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
             <div className={styles.moreList}>
-                <div className={styles.moreItem}>
+                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
                 <img src="/icon/icon_calendar.png" alt="월간 운세" className={styles.moreIcon} />
                 <div>
                     <div className={styles.moreTitle}>월간 운세</div>
                     <div className={styles.moreDesc}>이번 달 나의 행운은 어디서 올까?</div>
                 </div>
                 </div>
-                <div className={styles.moreItem}>
+                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
                 <img src="/icon/icon_clover.png" alt="연간 운세" className={styles.moreIcon} />
                 <div>
                     <div className={styles.moreTitle}>연간 운세</div>
                     <div className={styles.moreDesc}>올 한 해 나의 행운 포인트는?</div>
                 </div>
                 </div>
-                <div className={styles.moreItem}>
+                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
                 <img src="/icon/icon_coin.png" alt="재물운" className={styles.moreIcon} />
                 <div>
                     <div className={styles.moreTitle}>재물운</div>
                     <div className={styles.moreDesc}>나를 기다리는 재물의 기운은 어디에?</div>
                 </div>
                 </div>
-                <div className={styles.moreItem}>
+                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
                 <img src="/icon/icon_heart.png" alt="애정운" className={styles.moreIcon} />
                 <div>
                     <div className={styles.moreTitle}>애정운</div>
