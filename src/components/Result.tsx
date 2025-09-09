@@ -1,6 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from 'next/navigation';
 import styles from "../css/Result.module.css";
 import {
   Radar,
@@ -14,6 +17,7 @@ import {
   XAxis,
   YAxis,
   Cell,
+  LabelList
 } from "recharts";
 
 // ===== 타입 =====
@@ -130,8 +134,8 @@ const MOCK: ResultData = {
   },  
   weekly: [
     { label: "일", value: 85 },
-    { label: "월", value: 72 },
-    { label: "화", value: 60 },
+    { label: "월", value: 96 },
+    { label: "화", value: 72 },
     { label: "수", value: 75 },
     { label: "목", value: 92 },
     { label: "금", value: 76 },
@@ -191,31 +195,54 @@ function RadarBlock({
 
 // ===== 주간 바차트 =====
 function WeeklyBar({
-  data,
-  highlightLabel,
-}: {
-  data: ResultData["weekly"];
-  highlightLabel: string;
-}) {
-  return (
-    <div className={styles.weeklyWrap}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <XAxis dataKey="label" tickLine={false} axisLine={false} />
-          <YAxis hide domain={[0, 100]} />
-          <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-            {data.map((e, i) => (
-              <Cell
-                key={i}
-                fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"}
+    data,
+    highlightLabel,
+  }: {
+    data: ResultData["weekly"];
+    highlightLabel: string; // 오늘 요일 label ("일"~"토")
+  }) {
+    return (
+      <div className={styles.weeklyWrap}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 0 }}>
+            <XAxis dataKey="label" tickLine={false} axisLine={false} />
+            <YAxis hide domain={[0, 100]} />
+            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+              {data.map((e, i) => (
+                <Cell
+                  key={i}
+                  fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"}
+                />
+              ))}
+  
+              {/* 막대 위에 점수 라벨 */}
+              <LabelList
+                dataKey="value"
+                content={(props: any) => {
+                  const { x, y, width, value, index } = props;
+                  const cx = x + width / 2;
+                  const isToday = data[index].label === highlightLabel;
+                  return (
+                    <text
+                      x={cx}
+                      y={y - 6}
+                      textAnchor="middle"
+                      fontSize={12}
+                      fontWeight={700}
+                      fill={isToday ? "#7C3AED" : "#6B7280"}
+                    >
+                      {value}
+                    </text>
+                  );
+                }}
               />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+  
 
 // ===== 3줄 미리보기 + 펼쳐보기 =====
 function ExpandableText({
@@ -265,7 +292,7 @@ function ExpandableText({
 export default function Result({ data = MOCK }: { data?: ResultData }) {
   const [active, setActive] = useState<CategoryKey>("총운");
   const [expanded, setExpanded] = useState(false);
-
+  const router = useRouter();
   const activeText = data.categories[active].text;
   const activeScore = data.categories[active].score;
 
@@ -291,7 +318,9 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
             <Chip>{data.dateLabel}</Chip>
             <div className={styles.heroScore}>{data.score}점</div>
             <div className={styles.heroRow}>
-            <div className={styles.heroIcon} />
+            <div className={styles.heroIcon}>
+                <img src="/icon/icon_sun.png" alt="sun icon" className={styles.heroIconImg} />
+            </div>
             <p className={styles.heroText}>
                 오늘 하루, 나를 비추는 행운은?
                 <br />
@@ -303,34 +332,59 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
 
         {/* 오늘의 행운 (풀블리드 카드) */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>오늘의 행운</h2>
-          <div className={styles.luckyGrid}>
-            <dl>
-              <dt>행운의 숫자</dt>
-              <dd>{data.lucky.numbers}</dd>
-            </dl>
-            <dl>
-              <dt>행운의 방향</dt>
-              <dd>{data.lucky.direction}</dd>
-            </dl>
-            <dl>
-              <dt>행운의 보석</dt>
-              <dd>{data.lucky.gem}</dd>
-            </dl>
-            <dl>
-              <dt>행운의 색깔</dt>
-              <dd>{data.lucky.color}</dd>
-            </dl>
-            <dl>
-              <dt>행운의 장소</dt>
-              <dd>{data.lucky.place}</dd>
-            </dl>
-            <dl>
-              <dt>행운의 꽃</dt>
-              <dd>{data.lucky.flower}</dd>
-            </dl>
-          </div>
+            <h2 className={styles.sectionTitle}>오늘의 행운</h2>
+
+            <div className={styles.luckyGrid}>
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_number7.png" alt="행운의 숫자" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 숫자</div>
+                    <div className={styles.luckyValue}>{data.lucky.numbers}</div>
+                </div>
+                </div>
+
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_compass.png" alt="행운의 방향" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 방향</div>
+                    <div className={styles.luckyValue}>{data.lucky.direction}</div>
+                </div>
+                </div>
+
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_diamond.png" alt="행운의 보석" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 보석</div>
+                    <div className={styles.luckyValue}>{data.lucky.gem}</div>
+                </div>
+                </div>
+
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_rainbow.png" alt="행운의 색깔" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 색깔</div>
+                    <div className={styles.luckyValue}>{data.lucky.color}</div>
+                </div>
+                </div>
+
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_location.png" alt="행운의 장소" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 장소</div>
+                    <div className={styles.luckyValue}>{data.lucky.place}</div>
+                </div>
+                </div>
+
+                <div className={styles.luckyItem}>
+                <img src="/icon/icon_flower.png" alt="행운의 꽃" className={styles.luckyIcon} />
+                <div className={styles.luckyTexts}>
+                    <div className={styles.luckyTitle}>행운의 꽃</div>
+                    <div className={styles.luckyValue}>{data.lucky.flower}</div>
+                </div>
+                </div>
+            </div>
         </SectionCard>
+
 
         {/* 오늘의 운세 상세 (풀블리드 카드) */}
         <SectionCard>
@@ -391,56 +445,55 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         {/* 이번 주 점수 (풀블리드 카드) */}
         <SectionCard>
           <h2 className={styles.sectionTitle}>이번 주 운세 점수는?</h2>
-          <WeeklyBar data={data.weekly} highlightLabel="월" />
+                  <WeeklyBar
+                      data={data.weekly}
+                      highlightLabel={new Intl.DateTimeFormat("ko-KR", {
+                      weekday: "short",
+                      timeZone: "Asia/Seoul",
+                    }).format(new Date())} />
         </SectionCard>
 
         {/* 다른 운세 보러가기 (풀블리드 카드) */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
-          <div className={styles.moreList}>
-            <div className={styles.moreItem}>
-              <span className={styles.emoji}>📅</span>
-              <div>
-                <div className={styles.moreTitle}>월간 운세</div>
-                <div className={styles.moreDesc}>
-                  이번 달 나의 행운은 어디서 올까?
+            <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
+            <div className={styles.moreList}>
+                <div className={styles.moreItem}>
+                <img src="/icon/icon_calendar.png" alt="월간 운세" className={styles.moreIcon} />
+                <div>
+                    <div className={styles.moreTitle}>월간 운세</div>
+                    <div className={styles.moreDesc}>이번 달 나의 행운은 어디서 올까?</div>
                 </div>
-              </div>
-            </div>
-            <div className={styles.moreItem}>
-              <span className={styles.emoji}>🍀</span>
-              <div>
-                <div className={styles.moreTitle}>연간 운세</div>
-                <div className={styles.moreDesc}>
-                  올 한 해 나의 행운 포인트는?
                 </div>
-              </div>
-            </div>
-            <div className={styles.moreItem}>
-              <span className={styles.emoji}>🪙</span>
-              <div>
-                <div className={styles.moreTitle}>재물운</div>
-                <div className={styles.moreDesc}>
-                  나를 기다리는 재물의 기운은 어디에?
+                <div className={styles.moreItem}>
+                <img src="/icon/icon_clover.png" alt="연간 운세" className={styles.moreIcon} />
+                <div>
+                    <div className={styles.moreTitle}>연간 운세</div>
+                    <div className={styles.moreDesc}>올 한 해 나의 행운 포인트는?</div>
                 </div>
-              </div>
-            </div>
-            <div className={styles.moreItem}>
-              <span className={styles.emoji}>💗</span>
-              <div>
-                <div className={styles.moreTitle}>애정운</div>
-                <div className={styles.moreDesc}>
-                  나의 인연은 어디에 있을까?
                 </div>
-              </div>
+                <div className={styles.moreItem}>
+                <img src="/icon/icon_coin.png" alt="재물운" className={styles.moreIcon} />
+                <div>
+                    <div className={styles.moreTitle}>재물운</div>
+                    <div className={styles.moreDesc}>나를 기다리는 재물의 기운은 어디에?</div>
+                </div>
+                </div>
+                <div className={styles.moreItem}>
+                <img src="/icon/icon_heart.png" alt="애정운" className={styles.moreIcon} />
+                <div>
+                    <div className={styles.moreTitle}>애정운</div>
+                    <div className={styles.moreDesc}>나의 인연은 어디에 있을까?</div>
+                </div>
+                </div>
             </div>
-          </div>
         </SectionCard>
 
-        {/* CTA (풀블리드 버튼) */}
-        <div className={styles.ctaWrap}>
-          <button className={styles.ctaBtn}>사주정보 변경하기</button>
-        </div>
+            {/* CTA (이미지 버튼) */}
+            <div className={styles.ctaWrap} onClick={() => router.push('/info')}>
+            <button className={styles.ctaBtn}>
+                <img src="/changeButton.png" alt="사주정보 변경하기" className={styles.ctaImg} />
+            </button>
+            </div>
       </main>
     </div>
   );
