@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "../css/Result.module.css";
 import {
@@ -194,55 +194,58 @@ function RadarBlock({
   }  
 
 // ===== 주간 바차트 =====
-function WeeklyBar({
+const WeeklyBar = memo(function WeeklyBar({
     data,
     highlightLabel,
   }: {
     data: ResultData["weekly"];
-    highlightLabel: string; // 오늘 요일 label ("일"~"토")
+    highlightLabel: string; // 오늘 요일 ("일"~"토")
   }) {
+    // 라벨 렌더러 메모
+    const renderLabel = useCallback(
+      (props: any) => {
+        const { x, y, width, value, index } = props;
+        const cx = x + width / 2;
+        const isToday = data[index].label === highlightLabel;
+        return (
+          <text
+            x={cx}
+            y={y - 6}
+            textAnchor="middle"
+            fontSize={12}
+            fontWeight={700}
+            fill={isToday ? "#7C3AED" : "#6B7280"}
+          >
+            {value}
+          </text>
+        );
+      },
+      [data, highlightLabel]
+    );
+  
     return (
       <div className={styles.weeklyWrap}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 20, right: 8, left: 8, bottom: 0 }}>
             <XAxis dataKey="label" tickLine={false} axisLine={false} />
             <YAxis hide domain={[0, 100]} />
-            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+            <Bar
+              dataKey="value"
+              radius={[6, 6, 0, 0]}
+              isAnimationActive={false}   // ← 여기서만 애니메이션 OFF
+              animationDuration={0}
+            >
               {data.map((e, i) => (
-                <Cell
-                  key={i}
-                  fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"}
-                />
+                <Cell key={i} fill={e.label === highlightLabel ? "#7C3AED" : "#E5E7EB"} />
               ))}
-  
-              {/* 막대 위에 점수 라벨 */}
-              <LabelList
-                dataKey="value"
-                content={(props: any) => {
-                  const { x, y, width, value, index } = props;
-                  const cx = x + width / 2;
-                  const isToday = data[index].label === highlightLabel;
-                  return (
-                    <text
-                      x={cx}
-                      y={y - 6}
-                      textAnchor="middle"
-                      fontSize={12}
-                      fontWeight={700}
-                      fill={isToday ? "#7C3AED" : "#6B7280"}
-                    >
-                      {value}
-                    </text>
-                  );
-                }}
-              />
+              <LabelList dataKey="value" content={renderLabel} />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
     );
-  }
-  
+  });
+  export { WeeklyBar };
 
 // ===== 3줄 미리보기 + 펼쳐보기 =====
 function ExpandableText({
@@ -454,38 +457,40 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         </SectionCard>
 
         {/* 다른 운세 보러가기 (풀블리드 카드) */}
-        <SectionCard>
-            <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
-            <div className={styles.moreList}>
-                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                <img src="/icon/icon_calendar.png" alt="월간 운세" className={styles.moreIcon} />
-                <div>
-                    <div className={styles.moreTitle}>월간 운세</div>
-                    <div className={styles.moreDesc}>이번 달 나의 행운은 어디서 올까?</div>
-                </div>
-                </div>
-                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                <img src="/icon/icon_clover.png" alt="연간 운세" className={styles.moreIcon} />
-                <div>
-                    <div className={styles.moreTitle}>연간 운세</div>
-                    <div className={styles.moreDesc}>올 한 해 나의 행운 포인트는?</div>
-                </div>
-                </div>
-                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                <img src="/icon/icon_coin.png" alt="재물운" className={styles.moreIcon} />
-                <div>
-                    <div className={styles.moreTitle}>재물운</div>
-                    <div className={styles.moreDesc}>나를 기다리는 재물의 기운은 어디에?</div>
-                </div>
-                </div>
-                <div className={styles.moreItem} onClick={() => router.push('/landing')} >
-                <img src="/icon/icon_heart.png" alt="애정운" className={styles.moreIcon} />
-                <div>
-                    <div className={styles.moreTitle}>애정운</div>
-                    <div className={styles.moreDesc}>나의 인연은 어디에 있을까?</div>
-                </div>
-                </div>
-            </div>
+              <SectionCard>
+              <h2 className={styles.sectionTitle}>다른 운세 보러가기</h2>
+            <div className={styles.moreCenter}>
+                    <div className={styles.moreList}>
+                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
+                            <img src="/icon/icon_calendar.png" alt="월간 운세" className={styles.moreIcon} />
+                        <div>
+                            <div className={styles.moreTitle}>월간 운세</div>
+                            <div className={styles.moreDesc}>이번 달 나의 행운은 어디서 올까?</div>
+                        </div>
+                        </div>
+                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
+                            <img src="/icon/icon_clover.png" alt="연간 운세" className={styles.moreIcon} />
+                        <div>
+                            <div className={styles.moreTitle}>연간 운세</div>
+                            <div className={styles.moreDesc}>올 한 해 나의 행운 포인트는?</div>
+                        </div>
+                        </div>
+                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
+                            <img src="/icon/icon_coin.png" alt="재물운" className={styles.moreIcon} />
+                        <div>
+                            <div className={styles.moreTitle}>재물운</div>
+                            <div className={styles.moreDesc}>나를 기다리는 재물의 기운은 어디에?</div>
+                        </div>
+                        </div>
+                        <div className={styles.moreItem} onClick={() => router.push('/landing')} >
+                            <img src="/icon/icon_heart.png" alt="애정운" className={styles.moreIcon} />
+                        <div>
+                            <div className={styles.moreTitle}>애정운</div>
+                            <div className={styles.moreDesc}>나의 인연은 어디에 있을까?</div>
+                        </div>
+                        </div>
+                            </div>
+                      </div>
         </SectionCard>
 
             {/* CTA (이미지 버튼) */}

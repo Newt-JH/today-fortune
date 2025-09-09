@@ -201,6 +201,11 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     line-height: 1.5;       /* 줄간격 */
   }
 
+  .moreCenter {
+    max-width: 330px;   /* 320~360 사이에서 취향껏 조절 가능 */
+    margin: 0 auto;     /* 카드 안에서 가운데 정렬 */
+  }
+
 /* 이모지/텍스트 */
 .emoji { font-size:22px; }
 .moreTitle { font-weight:600; font-size:16px; }
