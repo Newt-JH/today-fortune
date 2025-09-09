@@ -276,47 +276,53 @@ export { WeeklyBar };
 
 // ===== 3줄 미리보기 + 펼쳐보기 =====
 function ExpandableText({
-  text,
-  expanded,
-  onToggle,
-}: {
-  text: string;
-  expanded: boolean;
-  onToggle: () => void;
-}) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [overflow, setOverflow] = useState(false);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
-    // 미리보기 상태에서 실제로 3줄을 넘는지 감지
-    if (!expanded) {
-      const isOverflow = el.scrollHeight > el.clientHeight + 1;
-      setOverflow(isOverflow);
-    } else {
-      setOverflow(true); // 펼친 상태에선 접기 버튼 노출
-    }
-  }, [text, expanded]);
-
-  return (
-    <>
-      <div
-        ref={ref}
-        className={`${styles.detailText} ${expanded ? "" : styles.clamp3}`}
-      >
-        {text}
-      </div>
-      <div className={styles.expandWrap}>
-        {overflow && (
-          <button className={styles.outlineBtn} onClick={onToggle}>
-            {expanded ? "접기" : "펼쳐보기"}
-          </button>
-        )}
-      </div>
-    </>
-  );
-}
+    text,
+    expanded,
+    onToggle,
+  }: {
+    text: string;
+    expanded: boolean;
+    onToggle: () => void;
+  }) {
+    const ref = useRef<HTMLDivElement | null>(null);
+    const [overflow, setOverflow] = useState(false);
+  
+    useEffect(() => {
+      if (!ref.current) return;
+      const el = ref.current;
+      if (!expanded) {
+        const isOverflow = el.scrollHeight > el.clientHeight + 1;
+        setOverflow(isOverflow);
+      } else {
+        setOverflow(true);
+      }
+    }, [text, expanded]);
+  
+    return (
+      <>
+        <div className={styles.detailWrap}>
+          <div
+            ref={ref}
+            className={`${styles.detailText} ${expanded ? "" : styles.clamp3}`}
+          >
+            {text}
+          </div>
+  
+          {/* ⬇️ 미리보기 상태일 때만 페이드 오버레이 */}
+          {!expanded && overflow && <div className={styles.textFade} />}
+        </div>
+  
+        <div className={styles.expandWrap}>
+          {overflow && (
+            <button className={styles.outlineBtn} onClick={onToggle}>
+              {expanded ? "접기" : "펼쳐보기"}
+            </button>
+          )}
+        </div>
+      </>
+    );
+  }
+  
 
 // ===== 메인 컴포넌트 =====
 export default function Result({ data = MOCK }: { data?: ResultData }) {
@@ -596,15 +602,19 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         </SectionCard>
 
         {/* CTA (이미지 버튼) */}
-        <div className={styles.ctaWrap} onClick={() => router.push("/info")}>
-          <button className={styles.ctaBtn}>
-            <img
-              src="/changeButton.png"
-              alt="사주정보 변경하기"
-              className={styles.ctaImg}
-            />
-          </button>
-        </div>
+        <section className={styles.card}>
+            <div className={styles.ctaCenter}>
+                <button className={styles.ctaBtn} /* onClick={... 네가 걸어둔 핸들러 유지 */>
+                    <img
+                        src="/changeButton.png"
+                        alt="사주정보 변경하기"
+                        className={styles.ctaImg}
+                    />
+                 </button>
+            </div>
+              </section>
+              
+              <div className={styles.bottomWhite} />
       </main>
     </div>
   );
