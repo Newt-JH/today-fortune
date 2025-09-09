@@ -604,7 +604,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         {/* CTA (이미지 버튼) */}
         <section className={styles.card}>
             <div className={styles.ctaCenter}>
-                <button className={styles.ctaBtn} /* onClick={... 네가 걸어둔 핸들러 유지 */>
+                <button className={styles.ctaBtn}  onClick={() => router.push('/info')}>
                     <img
                         src="/changeButton.png"
                         alt="사주정보 변경하기"
