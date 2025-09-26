@@ -337,12 +337,17 @@ function ExpandableText({
         </div>
   
         <div className={styles.expandWrap}>
-          {overflow && (
+          {!expanded && overflow && (
             <button className={styles.outlineBtn} onClick={onToggle}>
-              {expanded ? "접기" : "펼쳐보기"}
+              펼쳐보기
             </button>
           )}
         </div>
+
+        {/* 구분선: 펼쳐진 상태에서만 표시 */}
+        {expanded && (
+          <div className={styles.divider} />
+        )}
       </>
     );
   }
@@ -664,7 +669,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
             <div className={styles.moreList}>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/landing")}
+                onClick={() => router.push("/fortune-landing?type=monthly")}
               >
                 <img
                   src="/icon/icon_calendar.png"
@@ -680,7 +685,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/landing")}
+                onClick={() => router.push("/fortune-landing?type=yearly")}
               >
                 <img
                   src="/icon/icon_clover.png"
@@ -696,7 +701,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/landing")}
+                onClick={() => router.push("/fortune-landing?type=wealth")}
               >
                 <img
                   src="/icon/icon_coin.png"
@@ -712,7 +717,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/landing")}
+                onClick={() => router.push("/fortune-landing?type=love")}
               >
                 <img
                   src="/icon/icon_heart.png"

@@ -28,7 +28,15 @@ margin:0 -16px 12px;
 .heroCard { padding:20px 16px; } /* 상단은 여백 조금 넉넉히 */
 
 /* 히어로 내부 */
-.hero { display:grid; place-items:center; gap:12px; }
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+  width: 360px;
+  height: 190px;
+  margin: 0 auto;
+}
 /* 날짜 배지 – 연보라 */
 .chip { display:inline-block; background:#8D55E8; color:#ffffff; border:1px solid #E9D5FF;
 padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
@@ -37,24 +45,32 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
 /* 아이콘+문구 중앙 정렬, 문구도 중앙 정렬 */
 .heroRow { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; }
 .heroIcon {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   
   .heroIconImg {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
   }
-.heroText { font-size:16px; font-weight:600; line-height:1.6; color:#374151; text-align:center; white-space:pre-line; }
+.heroText {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #374151;
+  text-align: center;
+  white-space: pre-line;
+  margin-top: -10px; /* 이미지 쪽으로 당겨오기 */
+}
 /* 히어로 섹션 – 화면 가득 흰 배경 */
 .heroSection {
       background:#fff;
       margin:0 -16px 12px;   /* 좌우 풀블리드 */
-      padding:20px 16px;
+      padding:10px 16px 20px;  /* 상단 패딩 줄임 */
       box-shadow:0 6px 24px rgba(17,24,39,0.04);
     }
 
@@ -151,8 +167,32 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     grid-template-columns: repeat(6, 1fr); /* 6등분 */
     gap: 8px;
     margin-top: 20px;
-    padding: 0 12px; /* 좌우 살짝 여백(원하면 0으로) */
+    padding: 0 2px; /* 텍스트와 맞춤 */
   }
+
+/* 2개 탭용 (상반기/하반기) */
+.tabRow2 {
+  grid-template-columns: repeat(2, 1fr);
+  padding: 0 2px; /* 텍스트와 맞춤 */
+}
+
+/* 4개 탭용 (태아 운세) */
+.tabRow4 {
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0 2px; /* 텍스트와 맞춤 */
+}
+
+/* 5개 탭용 (월별 운세) */
+.tabRow5 {
+  grid-template-columns: repeat(5, 1fr);
+  padding: 0 2px; /* 텍스트와 맞춤 */
+}
+
+/* 6개 탭용 (월별 운세) */
+.tabRow6 {
+  grid-template-columns: repeat(6, 1fr);
+  padding: 0 2px; /* 텍스트와 맞춤 */
+}
   .tab{
     width: 100%;
     text-align: center;
@@ -179,12 +219,13 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     position: relative;
   }
   
-  /* 3줄 미리보기 (기존과 동일) */
+  /* 3.8줄 미리보기 */
   .clamp3 {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    max-height: 96px; /* 3.8줄 (25.2px * 3.8 = 95.76px) */
   }
   
   /* 아래가 흐려지듯 사라지는 페이드 */
@@ -193,14 +234,22 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 42px; /* 필요시 36~48px 사이로 조절 */
+    height: 50px; /* 4줄에 맞춰 높이 증가 */
     background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 70%);
     pointer-events: none; /* 클릭 막지 않도록 */
     border-bottom-left-radius: 12px;   /* 카드 곡률과 어울리게(선택) */
     border-bottom-right-radius: 12px;
   }
-.expandWrap { display:grid; place-items:center; margin-top:12px; padding:0 16px; }
+.expandWrap { display:grid; place-items:center; margin-top:16px; padding:0 16px; }
 .outlineBtn { width:100%; height:44px; border-radius:13px; border:1px solid #D1D5DB; background:#fff; font-weight:700; }
+
+/* 구분선 */
+.divider {
+  width: 320px;
+  height: 0px;
+  border-top: 1.5px solid #EDEDED;
+  margin: 16px auto;
+}
 
 /* 쿠팡 배너 */
 .coupangBox { margin-top:14px; border:1px solid #EDEEF0; border-radius:14px; padding:10px; background:#FFFEFF; }
