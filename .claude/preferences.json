@@ -1,0 +1,26 @@
+{
+  "appearance": {
+    "theme": "dark",
+    "fontSize": 14,
+    "fontFamily": "SF Mono, Monaco, monospace"
+  },
+  "editor": {
+    "tabSize": 2,
+    "insertSpaces": true,
+    "wordWrap": true,
+    "showLineNumbers": true,
+    "autoSave": true
+  },
+  "project": {
+    "name": "today-fortune",
+    "description": "Fortune telling game project",
+    "language": "javascript",
+    "framework": "react"
+  },
+  "ai": {
+    "model": "claude-3-5-sonnet-20241022",
+    "maxTokens": 4000,
+    "temperature": 0.1,
+    "contextWindow": 200000
+  }
+}

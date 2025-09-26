@@ -1,0 +1,23 @@
+{
+  "pre-commit": {
+    "enabled": true,
+    "commands": [
+      "npm run lint",
+      "npm run test",
+      "npm run build"
+    ]
+  },
+  "post-edit": {
+    "enabled": false,
+    "commands": [
+      "prettier --write"
+    ]
+  },
+  "on-file-change": {
+    "enabled": false,
+    "patterns": ["*.js", "*.jsx", "*.ts", "*.tsx"],
+    "commands": [
+      "eslint --fix"
+    ]
+  }
+}

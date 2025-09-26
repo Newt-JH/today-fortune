@@ -1,9 +1,9 @@
 /* 화면/공통 */
 .screen { min-height:100vh; background:#FAFAFB; color:#111827;
     font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; }
-.header { position:sticky; top:0; z-index:10; background:#fff; backdrop-filter:blur(8px); border-bottom:0; }
+.header { position:sticky; top:0; z-index:9999; background:#fff; backdrop-filter:blur(8px); border-bottom:0; }
 .headerInner { max-width:420px; margin:0 auto; height:52px; display:flex; align-items:center; padding:0 16px; }
-.backBtn { background:transparent; border:none; outline:none; width:auto; height:auto; padding:0;font-size:20px; font-weight:700; line-height:1; color:#333; cursor:pointer; }
+.backBtn { background:transparent; border:none; outline:none; width:auto; height:auto; padding:0;font-size:24px; font-weight:700; line-height:1; color:#333; cursor:pointer; }
 .headerTitle { flex:1; text-align:center; font-weight:700; font-size:16px; }
 .headerSpacer { width:20px; height:20px; }
 .body{
@@ -131,6 +131,20 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     font-weight: 800;
   }
 
+  /* 선택된 카테고리 위치의 점수 배지 */
+  .scoreBadgeActive {
+    position: absolute;
+    background: #D0B3FF;
+    color: #ffffff;
+    border: 1px solid #DDD6FE;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 800;
+    z-index: 10;
+    white-space: nowrap;
+  }
+
 /* 탭 */
 .tabRow{
     display: grid;
@@ -190,7 +204,8 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
 
 /* 쿠팡 배너 */
 .coupangBox { margin-top:14px; border:1px solid #EDEEF0; border-radius:14px; padding:10px; background:#FFFEFF; }
-.coupangHead { font-size:13px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.coupangHead { font-size:16px; font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.coupangHeadArrow { font-size:22px; color:#9CA3AF; line-height:1; }
 .adBadge { font-size:10px; padding:2px 6px; background:#FFF1F2; color:#E11D48; border:1px solid #FFE4E6; border-radius:999px; }
 .coupangItem { display:flex; align-items:center; gap:10px; }
 .coupangThumb { width:56px; height:56px; border-radius:10px; background:linear-gradient(145deg,#F1F5F9,#E2E8F0); border:1px solid #EDEEF0; flex:0 0 auto; }
@@ -275,3 +290,242 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
 }
 .ctaBtn{ background:none; border:none; padding:0; cursor:pointer; }
 .ctaImg{ display:block; width:320px; height:auto; }
+
+/* 리워드 모달 */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+}
+
+.modalClose {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: #f3f4f6;
+  border-radius: 50%;
+  font-size: 16px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalBody {
+  padding: 20px;
+  text-align: center;
+}
+
+.rewardIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.modalText {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.rewardAmount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #10b981;
+  margin-bottom: 8px;
+}
+
+.modalFooter {
+  padding: 0 20px 20px;
+}
+
+.modalButton {
+  width: 100%;
+  height: 44px;
+  background: #8B5CF6;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.noRewardText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ef4444;
+  margin-bottom: 8px;
+}
+
+/* 리워드 토스트 */
+.rewardToast {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  animation: toastSlideDown 0.4s ease-out forwards, toastSlideUp 0.4s ease-out 2.6s forwards;
+}
+
+@keyframes toastSlideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(60px);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideUp {
+  from {
+    transform: translateX(-50%) translateY(60px);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.toastContent {
+  width: 170px;
+  height: 46px;
+  background: #fff;
+  color: #333;
+  padding: 12px 16px 12px 16px;
+  border-radius: 23px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.toastIcon {
+  font-size: 18px;
+}
+
+.toastText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 실패 모달 (새로운 디자인) */
+.failModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.failModalContent {
+  width: 300px;
+  height: 360px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+.failModalBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 20px;
+  text-align: center;
+}
+
+.failModalImage {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 24px;
+}
+
+.failModalText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #404040;
+  line-height: 150%;
+  margin: 0;
+  text-align: center;
+}
+
+.failModalButton {
+  width: 240px;
+  height: 48px;
+  background: #8B5CF6;
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 0 auto 20px;
+  box-sizing: border-box;
+}

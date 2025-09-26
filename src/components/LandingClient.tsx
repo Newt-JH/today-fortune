@@ -23,6 +23,24 @@ function getCookie(name: string): string | null {
   return null;
 }
 
+function setCookie(name: string, value: string, hours: number = 2) {
+  if (typeof document === 'undefined') return;
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (hours * 60 * 60 * 1000));
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/`;
+}
+
+function checkAdCooldown(): boolean {
+  const lastShown = getCookie('coupangAdShown');
+  if (!lastShown) return false;
+
+  const lastTime = parseInt(lastShown);
+  const now = Date.now();
+  const twoHours = 2 * 60 * 60 * 1000; // 2시간을 밀리초로
+
+  return (now - lastTime) < twoHours;
+}
+
 export default function LandingClient() {
   const router = useRouter();
 
@@ -74,6 +92,18 @@ export default function LandingClient() {
   const [showAd, setShowAd] = useState(true);
   const [canCloseAd, setCanCloseAd] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [showCoupangAd, setShowCoupangAd] = useState(false);
+
+  // 쿠팡 광고 쿨다운 체크
+  useEffect(() => {
+    const shouldShowCoupang = !checkAdCooldown();
+    setShowCoupangAd(shouldShowCoupang);
+
+    if (shouldShowCoupang) {
+      // 쿠팡 광고를 보여주는 경우 현재 시간 저장
+      setCookie('coupangAdShown', Date.now().toString());
+    }
+  }, []);
 
   useEffect(() => {
     if (!showAd) return;
@@ -95,11 +125,36 @@ export default function LandingClient() {
   // CTA X 클릭 시 숨김
   const [hideCta, setHideCta] = useState(false);
 
+  // 수정 필요: 광고 클릭 핸들러 함수 (나중에 로직 변경 가능)
+  const handleCoupangAdClick = () => {
+    window.open('https://example.com/coupang-ad', '_blank');
+    router.push('/result');
+  };
+
+  const handleFortuneAdClick = () => {
+    window.open('https://example.com/fortune-ad', '_blank');
+    router.push('/result');
+  };
+
+  // 수정 필요: CTA 버튼 클릭 핸들러 함수 (나중에 로직 변경 가능)
+  const handleCtaButtonClick = () => {
+    const adLink = showCoupangAd
+      ? 'https://example.com/coupang-ad'  // 쿠팡 광고 링크
+      : 'https://example.com/fortune-ad'; // 포춘쿠키 광고 링크
+
+    window.open(adLink, '_blank');
+    router.push('/result');
+  };
+
   const cloverSrc = CLOVERS[frame];
 
   return (
     <div className={styles.screen}>
-      <button className={styles.back} aria-label="뒤로가기" onClick={() => history.back()}>
+      <button
+        className={styles.back}
+        aria-label="뒤로가기"
+        onClick={() => history.back()} // 수정 필요: 나중에 함수 변경 가능
+      >
         ‹
       </button>
 
@@ -139,39 +194,73 @@ export default function LandingClient() {
         </p>
       </section>
 
-      {/* ③ 쿠팡 광고 (문구 아래) + 고지문 */}
+      {/* ③ 쿠팡 광고 또는 포춘쿠키 이미지 (문구 아래) + 고지문 */}
       <section className={styles.adSection}>
         {showAd && (
           <>
-            <div className={styles.adCard}>
-              <div className={styles.adLeft}>
-                <span className={styles.adBadge}>쿠팡</span>
-                <div className={styles.adTitle}>
-                  3세이상 부모자식 놀이 확산용 미니농구 게임, 1개
-                </div>
-                <div className={styles.adThumb} aria-hidden />
-              </div>
-
-              {/* 카운트다운 → 0 되면 X 버튼 활성화 */}
-              {!canCloseAd ? (
-                <div className={styles.adCloseCountdown} aria-hidden="true">
-                  {countdown}
-                </div>
-              ) : (
-                <button
-                  className={styles.adClose}
-                  aria-label="광고 닫기"
-                  onClick={() => router.push('/info')}
+            {showCoupangAd ? (
+              // 쿠팡 광고 표시 (2시간 지났을 때)
+              <>
+                <div
+                  className={styles.adCard}
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleCoupangAdClick}
                 >
-                  ×
-                </button>
-              )}
-            </div>
+                  <div className={styles.adLeft}>
+                    <span className={styles.adBadge}>쿠팡</span>
+                    <div className={styles.adTitle}>
+                      3세이상 부모자식 놀이 확산용 미니농구 게임, 1개
+                    </div>
+                    <div className={styles.adThumb} aria-hidden />
+                  </div>
+                </div>
 
-            <footer className={styles.partnerNote}>
-              이 포스팅은 쿠팡 파트너스 활동의 일환으로, <br />
-              이에 따른 일정액의 수수료를 제공받습니다.
-            </footer>
+                {/* X 버튼은 별도로 위치 */}
+                {!canCloseAd ? (
+                  <div className={styles.adCloseCountdown} aria-hidden="true">
+                    {countdown}
+                  </div>
+                ) : (
+                  <button
+                    className={styles.adClose}
+                    aria-label="광고 닫기"
+                    onClick={() => router.push('/info')}
+                  >
+                    ×
+                  </button>
+                )}
+
+                <footer className={styles.partnerNote}>
+                  이 포스팅은 쿠팡 파트너스 활동의 일환으로, <br />
+                  이에 따른 일정액의 수수료를 제공받습니다.
+                </footer>
+              </>
+            ) : (
+              // 포춘쿠키 대체 콘텐츠 표시 (2시간 이내일 때)
+              <>
+                <div className={styles.fortuneContainer}>
+                  {/* 수정 필요 부분: 실제 이미지와 링크로 교체 */}
+                  <div
+                    className={styles.fortuneAdCard}
+                    style={{ cursor: 'pointer' }}
+                    onClick={handleFortuneAdClick}
+                  >
+                    <div className={styles.fortuneAdHeader}>
+                      <h3 className={styles.fortuneAdTitle}>행운의 포춘쿠키!</h3>
+                      <p className={styles.fortuneAdSubtitle}>포춘쿠키 속 행운을 확인하세요 <br />( 이 부분은 이미지로 변경 예정 )</p>
+                    </div>
+                    <div className={styles.fortuneAdImageContainer}>
+                      <div className={styles.fortuneAdImage} />
+                    </div>
+                    <div className={styles.fortuneAdSize}>360 X 160</div>
+                  </div>
+                </div>
+
+                <footer className={styles.partnerNote}>
+                  해당 링크 5초 이상 체류 후 <br />운세 결과 확인이 가능합니다.
+                </footer>
+              </>
+            )}
           </>
         )}
       </section>
@@ -179,8 +268,11 @@ export default function LandingClient() {
       {/* ④ 하단 CTA (+ X 버튼) */}
       {isComplete && !hideCta && (
         <div className={styles.ctaWrap}>
-          <button className={styles.ctaBtn} onClick={() => router.push('/result')}>
-            상품 보고 결과 보기
+          <button
+            className={styles.ctaBtn}
+            onClick={handleCtaButtonClick}
+          >
+            {showCoupangAd ? '상품 보고 결과 보기' : '광고 보고 결과 보기'}
           </button>
           <button
             className={styles.ctaClose}

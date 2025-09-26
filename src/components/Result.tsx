@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, memo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../css/Result.module.css";
 import {
   Radar,
@@ -70,8 +70,8 @@ const MOCK: ResultData = {
     { name: "총운", value: 72 },
     { name: "재물운", value: 76 },
     { name: "애정운", value: 70 },
-    { name: "직장운", value: 68 },
     { name: "소망운", value: 65 },
+    { name: "직장운", value: 68 },
     { name: "방위운", value: 72 },
   ],
   categories: {
@@ -169,31 +169,55 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 function RadarBlock({
   data,
   badge,
+  activeCategory,
 }: {
   data: ResultData["radar"];
   badge?: number;
+  activeCategory?: CategoryKey;
 }) {
+  // 각 카테고리별 점수 배지 위치 계산 (시계방향 순서에 맞춤)
+  const getScoreBadgePosition = (category: CategoryKey) => {
+    const positions: Record<CategoryKey, { top: string; left: string }> = {
+      "총운": { top: "7%", left: "50%" }, // 위쪽 중앙
+      "재물운": { top: "25%", left: "80%" }, // 우상단
+      "애정운": { top: "56%", left: "79%" }, // 우하단
+      "소망운": { top: "93%", left: "50%" }, // 하단 중앙
+      "직장운": { top: "56%", left: "20%" }, // 좌하단
+      "방위운": { top: "25%", left: "20%" }, // 좌상단
+    };
+    return positions[category] || { top: "6px", left: "50%" };
+  };
+
+  const badgePosition = activeCategory ? getScoreBadgePosition(activeCategory) : { top: "6px", left: "50%" };
+
   return (
     <div className={styles.radarWrap}>
-      {/* 점수 배지를 차트 위쪽 중앙으로 */}
+      {/* 선택된 카테고리 위치에 점수 배지 표시 */}
       {typeof badge === "number" && (
-        <div className={styles.scoreBadgeTop}>{badge}점</div>
+        <div
+          className={styles.scoreBadgeActive}
+          style={{
+            top: badgePosition.top,
+            left: badgePosition.left,
+            transform: badgePosition.left === "50%" ? "translateX(-50%)" : "translateX(-50%)"
+          }}
+        >
+          {badge}점
+        </div>
       )}
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart
           cx="50%"
-          cy="62%" // 차트 조금 내림
-          outerRadius="95%" // 90% → 95% (크게)
+          cy="55%" // 차트 위치 조정 (62% → 55%)
+          outerRadius="85%" // 크기 조정 (95% → 85%)
           data={data}
-          margin={{ top: 60, right: 20, bottom: 20, left: 20 }}
+          margin={{ top: 60, right: 30, bottom: 40, left: 30 }}
         >
           <PolarGrid stroke="#E5E7EB" />
           <PolarAngleAxis
             dataKey="name"
             tick={{ fontSize: 13, fill: "#6B7280" }}
-            tickFormatter={(v: string) =>
-              v === "총운" ? "총운" : v.replace("운", "")
-            }
+            tickFormatter={(v: string) => v} // 모든 이름 그대로 표시
           />
           <PolarRadiusAxis
             domain={[0, 100]}
@@ -324,22 +348,125 @@ function ExpandableText({
   }
   
 
+// 쿠키에서 사용자 이름 가져오기
+function getUserNameFromCookie(): string {
+  if (typeof document === 'undefined') return '운세왕';
+
+  try {
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'fortuneInfo') {
+        const decoded = JSON.parse(decodeURIComponent(value));
+        return decoded.name || '운세왕';
+      }
+    }
+  } catch (error) {
+    console.error('쿠키 파싱 오류:', error);
+  }
+  return '운세왕';
+}
+
 // ===== 메인 컴포넌트 =====
 export default function Result({ data = MOCK }: { data?: ResultData }) {
   const [active, setActive] = useState<CategoryKey>("총운");
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [showNoRewardModal, setShowNoRewardModal] = useState(false);
+  const [pendingRewardStatus, setPendingRewardStatus] = useState<'success' | 'already' | null>(null);
+  const [showRewardToast, setShowRewardToast] = useState(false);
+
   const activeText = data.categories[active].text;
   const activeScore = data.categories[active].score;
+
+  // 쿠팡 상품 클릭 핸들러
+  const handleCoupangProductClick = () => {
+    window.open('https://example.com/coupang-product', '_blank');
+  };
+
+  // 쿠키에서 리워드 수령 가능 여부 확인 (오늘 받을 수 있는지)
+  const canReceiveReward = (): boolean => {
+    if (typeof document === 'undefined') return false;
+
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
+    const cookies = document.cookie.split(';');
+
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'dailyReward') {
+        return value !== today; // 오늘 날짜가 아니면 받을 수 있음
+      }
+    }
+    return true; // 쿠키가 없으면 받을 수 있음
+  };
+
+  // 오늘 리워드 수령 처리
+  const markTodayRewardReceived = () => {
+    if (typeof document === 'undefined') return;
+
+    const today = new Date().toISOString().split('T')[0];
+    // 내일 자정에 만료되도록 설정
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    document.cookie = `dailyReward=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+  };
+
+  // 페이지 진입 시 리워드 상태 확인 (모달은 바로 띄우지 않음)
+  useEffect(() => {
+    // 광고에서 온 경우에만 리워드 로직 실행 (referrer로 판단하거나 쿠키로 판단)
+    // 여기서는 단순히 페이지 진입 시마다 체크
+    if (canReceiveReward()) {
+      setPendingRewardStatus('success'); // 받을 수 있는 경우
+      markTodayRewardReceived(); // 받음 처리
+    } else {
+      setPendingRewardStatus('already'); // 이미 받은 경우
+    }
+  }, []);
+
+  // 화면 복귀 감지 후 모달 표시
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && pendingRewardStatus) {
+        // 화면에 복귀했을 때 대기 중인 토스트/모달 표시
+        if (pendingRewardStatus === 'success') {
+          setShowRewardToast(true);
+          // 3초 후 토스트 숨김
+          setTimeout(() => setShowRewardToast(false), 3000);
+        } else if (pendingRewardStatus === 'already') {
+          setShowNoRewardModal(true);
+        }
+        setPendingRewardStatus(null); // 한 번만 표시
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 페이지 로드 시 이미 화면이 보이는 상태라면 바로 모달 표시
+    if (!document.hidden && pendingRewardStatus) {
+      setTimeout(() => handleVisibilityChange(), 100);
+    }
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [pendingRewardStatus]);
 
   return (
     <div className={styles.screen}>
       {/* 헤더 */}
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          {/* 둥근 배경 없이 '<' 만 표시 */}
-          <button className={styles.backBtn} aria-label="뒤로가기">
-            &lt;
+          {/* 둥근 배경 없이 '‹' 만 표시 */}
+          <button
+            className={styles.backBtn}
+            aria-label="뒤로가기"
+            onClick={() => history.back()} // 수정 필요: 나중에 함수 변경 가능
+          >
+            ‹
           </button>
           <div className={styles.headerTitle}>오늘의 운세</div>
           {/* 가운데 정렬 유지용 균형 공간 */}
@@ -454,7 +581,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
           <h2 className={styles.sectionTitle}>오늘의 운세 상세</h2>
 
           {/* 레이더 + 점수배지 */}
-          <RadarBlock data={data.radar} badge={activeScore} />
+          <RadarBlock data={data.radar} badge={activeScore} activeCategory={active} />
 
           {/* 탭 */}
           {/* 탭 */}
@@ -479,7 +606,6 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
                   }`}
                   onClick={() => {
                     setActive(k);
-                    setExpanded(false);
                   }}
                 >
                   {label}
@@ -499,10 +625,14 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
           {expanded && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
-                운세왕님을 위한 행운의 상품{" "}
-                <span className={styles.adBadge}>AD</span>
+                {getUserNameFromCookie()}님을 위한 행운의 상품
+                <span className={styles.coupangHeadArrow}>›</span>
               </div>
-              <div className={styles.coupangItem}>
+              <div
+                className={styles.coupangItem}
+                onClick={handleCoupangProductClick}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className={styles.coupangThumb} />
                 <div className={styles.coupangMeta}>
                   <div className={styles.coupangTitle}>
@@ -510,7 +640,6 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
                   </div>
                   <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
                 </div>
-                <div className={styles.coupangGo}>›</div>
               </div>
             </div>
           )}
@@ -616,6 +745,73 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               
               <div className={styles.bottomWhite} />
       </main>
+
+      {/* 리워드 모달 */}
+      {showRewardModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowRewardModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>🎉 축하합니다!</h2>
+              <button
+                className={styles.modalClose}
+                onClick={() => setShowRewardModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.rewardIcon}>🎁</div>
+              <p className={styles.modalText}>
+                광고를 시청해주셔서 감사합니다!<br />
+                리워드가 지급되었습니다.
+              </p>
+              <div className={styles.rewardAmount}>+100 포인트</div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={styles.modalButton}
+                onClick={() => setShowRewardModal(false)}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 리워드 못받은 모달 (새로운 디자인) */}
+      {showNoRewardModal && (
+        <div className={styles.failModalOverlay} onClick={() => setShowNoRewardModal(false)}>
+          <div className={styles.failModalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.failModalBody}>
+              <img
+                src="/icon/Icon_luckycatpaw.png"
+                alt="고양이 발가락"
+                className={styles.failModalImage}
+              />
+              <p className={styles.failModalText}>
+                오늘 하루, 나를 비추는 행운은?<br />
+                오늘 이벤트는 이미 참여했어요.
+              </p>
+            </div>
+            <button
+              className={styles.failModalButton}
+              onClick={() => setShowNoRewardModal(false)}
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 리워드 지급 완료 토스트 */}
+      {showRewardToast && (
+        <div className={styles.rewardToast}>
+          <div className={styles.toastContent}>
+            <span className={styles.toastText}>2 포인트 지급 완료</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

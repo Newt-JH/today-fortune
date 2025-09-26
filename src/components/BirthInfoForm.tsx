@@ -71,7 +71,11 @@ export default function BirthInfoForm() {
     <div className={styles.screen}>
       {/* Topbar */}
       <header className={styles.topbar}>
-        <button className={styles.back} aria-label="뒤로가기" onClick={() => history.back()}>
+        <button
+          className={styles.back}
+          aria-label="뒤로가기"
+          onClick={() => history.back()} // 수정 필요: 나중에 함수 변경 가능
+        >
           ‹
         </button>
         <h1 className={styles.title}>사주 정보</h1>
