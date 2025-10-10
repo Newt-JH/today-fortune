@@ -82,57 +82,39 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 
 export default function WealthResult() {
   const router = useRouter();
-  const [activePeriod, setActivePeriod] = useState<'shortTerm' | 'longTerm'>('shortTerm');
-  const [expandedWealth, setExpandedWealth] = useState(false);
-  const [activeType, setActiveType] = useState<'income' | 'investment' | 'savings' | 'spending'>('income');
-  const [expandedType, setExpandedType] = useState(false);
-  const [activeMonth, setActiveMonth] = useState<'thisMonth' | 'nextMonth' | 'thirdMonth'>('thisMonth');
-  const [expandedMonth, setExpandedMonth] = useState(false);
+  const [expandedBorn, setExpandedBorn] = useState(false);
+  const [expandedCurrent, setExpandedCurrent] = useState(false);
+  const [activeManagement, setActiveManagement] = useState<'gain' | 'loss'>('gain');
+  const [expandedManagement, setExpandedManagement] = useState(false);
+  const [expandedInvest, setExpandedInvest] = useState(false);
 
-  // 재물운 데이터
-  const wealthData = {
-    shortTerm: {
-      score: 88,
-      text: "단기 재물운은 매우 밝은 전망을 보이고 있습니다. 앞으로 3개월 내에 예상치 못한 수입이나 보너스가 생길 가능성이 높으며, 투자나 부업에서도 좋은 성과를 기대할 수 있습니다. 특히 새로운 기회나 제안이 들어올 수 있으니 신중하게 검토해보시기 바랍니다. 다만 갑작스러운 큰 수입이 있더라도 계획적으로 관리하는 것이 중요하며, 충동적인 지출은 피하는 것이 좋겠습니다. 주변 사람들과의 금전적 거래는 신중하게 접근하되, 믿을 만한 사람의 조언은 귀담아들으시기 바랍니다. 현재 진행 중인 투자가 있다면 좋은 수익을 낼 수 있는 시기이니 적절한 타이밍을 잡는 것이 중요합니다. 작은 절약도 큰 도움이 될 것이니 가계부를 작성하며 지출을 체크해보세요."
+  // 타고난 재물운
+  const bornWealthData = {
+    score: 72,
+    text: "타고난 재물운을 기반으로 사주 차원의 기운을 봤을 때 꾸준한 수입이 가능하며, 특히 노력에 비례해서 성과가 따라오는 운을 타고났습니다. 기본적으로 기저에 깔린 사주의 흐름이 재물을 꺼려하지 않는 편이므로 금전적인 기회들이 찾아올 때 막히지 않을 것이니, 그 순간의 행운이 찾아온다 다다를 수 있을 거예요. 젊었을때는 저축력이 떨어질 수 있지만 나이가 들수록 금전에 대한 감각이 발달하는 성향이 있어서 재무관리 능력이 향상될 것입니다. 특히 협력과 파트너십을 통한 재물운이 좋아 함께 일하거나 투자할 때 더 큰 성과를 거둘 수 있습니다. 다만 지나친 욕심은 오히려 독이 될 수 있으니 적절한 선에서 만족하고 감사하는 마음을 갖는 것이 중요합니다."
+  };
+
+  // 현재 재물운
+  const currentWealthData = {
+    text: "이 운에는 첫은 손에 쥔 재물의 기운을 아직까지 못 받고 있다면 약속되어 있는 시간이 막힐 수 있지만 시간이 지나갈수록 처레에 따라 수입이 안정화될 것입니다. 지혜롭게 자신의 시야를 바라보며 어딘가를 청하지마라 대체로 종견에 이러한 방향으로 해야하되 실적적인 사이의 허실에 바라지는 않기를 것을 묻더라도 아니더니 막힌 기를 받힐 좋게 이어지지 않음을 인건 자사의 것을 지을러고 볼러가는 비용은 몫을 다나지 마십시오. 투자를 고려하고 있다면 충분한 조사와 분석을 통해 결정하되, 전문가의 조언을 구하는 것도 좋겠습니다. 부동산이나 주식 등 자산 투자에 대한 기회가 찾아올 수 있으니 신중하게 검토해보시기 바랍니다."
+  };
+
+  // 재물 관리
+  const managementData = {
+    gain: {
+      text: "재물을 모으는 방법은 계획적인 관리와 꾸준한 실천이 핵심입니다. 기존의 저축 습관을 더욱 체계화하고 목표 금액을 설정해서 달성해 나가시기 바랍니다. 정기적금이나 적금 상품을 알아보고 자신에게 맞는 상품을 선택하는 것도 좋겠습니다. 가계부 작성을 통해 불필요한 지출을 줄이고 저축할 수 있는 여력을 늘려보세요. 자동이체를 활용해서 저축을 우선순위에 두는 시스템을 만드는 것이 효과적입니다. 비상금도 별도로 마련해두시고, 단기 목표와 장기 목표를 나누어 저축 계획을 세우시면 더욱 좋은 결과를 얻을 수 있을 것입니다. 수입이 생길 때마다 일정 비율을 먼저 저축하는 습관을 들이는 것이 재물을 모으는 가장 확실한 방법입니다."
     },
-    longTerm: {
-      score: 92,
-      text: "장기 재물운은 안정적이면서도 지속적인 성장이 기대되는 매우 좋은 흐름을 보이고 있습니다. 향후 1-2년간 꾸준한 수입 증가와 자산 축적이 가능할 것이며, 특히 부동산이나 장기 투자에서 좋은 성과를 거둘 수 있을 것입니다. 현재의 직업이나 사업에서 안정적인 수익을 바탕으로 새로운 수입원을 개발할 기회도 생길 것입니다. 교육이나 자기계발에 투자한 비용들이 몇 년 후 큰 수익으로 돌아올 가능성이 높으니 장기적인 관점에서 접근하시기 바랍니다. 가족이나 파트너와 함께 재정 계획을 세우고 목표를 공유한다면 더욱 좋은 결과를 얻을 수 있을 것입니다. 은퇴 후를 대비한 연금이나 보험 가입도 검토해볼 만한 시기입니다."
+    loss: {
+      text: "재물 손실을 막기 위해서는 신중한 판단과 계획적인 소비가 필요합니다. 큰 금액의 지출을 고려하고 있다면 충분한 검토와 비교를 통해 결정하시기 바랍니다. 충동적인 구매나 감정적인 소비는 가장 큰 재물 손실의 원인이 되므로 반드시 피해야 합니다. 투자나 대출을 할 때는 본인의 재정 상태를 정확히 파악하고 감당할 수 있는 범위 내에서 결정하세요. 사기나 피싱 등 금융 범죄에 주의하고, 너무 좋은 조건의 투자 제안은 의심해보는 것이 좋습니다. 정기적인 고정비를 점검하고 불필요한 구독이나 서비스는 정리하는 것도 중요합니다. 보험이나 비상금을 통해 예상치 못한 손실에 대비하는 것도 재물을 지키는 현명한 방법입니다."
     }
   };
 
-  // 재물 유형 데이터
-  const typeData = {
-    income: {
-      text: "수입운은 현재 상승세를 타고 있어 매우 긍정적인 전망을 보입니다. 본업에서의 급여 인상이나 성과급 지급 가능성이 높으며, 부업이나 투자를 통한 추가 수입도 기대할 수 있습니다. 새로운 일자리나 사업 기회가 찾아올 수 있으니 적극적으로 네트워킹하고 정보를 수집하시기 바랍니다. 프리랜서나 자영업자라면 새로운 클라이언트나 고객을 확보할 좋은 시기입니다. 다만 수입이 늘어날수록 세금이나 각종 공과금도 함께 증가할 수 있으니 미리 대비해두시는 것이 좋겠습니다. 능력에 비해 대우를 제대로 받지 못하고 있다면 이번 기회에 정당한 평가를 요구해볼 만합니다."
-    },
-    investment: {
-      text: "투자운은 신중하되 적극적인 접근이 필요한 시기입니다. 주식이나 펀드 등 기존 투자에서 좋은 수익을 낼 가능성이 높으며, 새로운 투자 기회도 찾아올 것입니다. 다만 높은 수익률에만 현혹되지 말고 안정성과 위험도를 충분히 검토한 후 결정하시기 바랍니다. 부동산 투자를 고려하고 있다면 좋은 물건을 찾을 수 있는 시기이니 시장 동향을 주의 깊게 살펴보세요. 암호화폐나 새로운 투자 상품에 관심이 있다면 소액으로 시작해서 경험을 쌓는 것이 좋겠습니다. 투자 전문가나 신뢰할 만한 사람의 조언을 구하는 것도 도움이 될 것입니다."
-    },
-    savings: {
-      text: "저축운은 계획적인 관리와 꾸준한 실천이 큰 성과로 이어지는 시기입니다. 기존의 저축 습관을 더욱 체계화하고 목표 금액을 설정해서 달성해 나가시기 바랍니다. 정기적금이나 적금 상품을 알아보고 자신에게 맞는 상품을 선택하는 것도 좋겠습니다. 가계부 작성을 통해 불필요한 지출을 줄이고 저축할 수 있는 여력을 늘려보세요. 자동이체를 활용해서 저축을 우선순위에 두는 시스템을 만드는 것이 효과적입니다. 비상금도 별도로 마련해두시고, 단기 목표와 장기 목표를 나누어 저축 계획을 세우시면 더욱 좋은 결과를 얻을 수 있을 것입니다."
-    },
-    spending: {
-      text: "지출운은 현명한 소비와 계획적인 지출이 필요한 시기입니다. 큰 금액의 지출을 고려하고 있다면 충분한 검토와 비교를 통해 결정하시기 바랍니다. 품질 좋은 제품이나 서비스에 투자하는 것은 장기적으로 이익이 되지만, 충동적인 구매는 피하는 것이 좋겠습니다. 교육이나 건강, 자기계발을 위한 지출은 미래에 큰 도움이 될 것이니 적극적으로 고려해보세요. 가족이나 사랑하는 사람을 위한 지출도 좋은 에너지를 가져다줄 것입니다. 정기적인 고정비를 점검하고 불필요한 구독이나 서비스는 정리하는 것도 필요합니다. 할인이나 적립 혜택을 활용하면 더욱 현명한 소비가 가능할 것입니다."
-    }
+  // 재테크 재물운
+  const investData = {
+    text: "재테크 재물운은 다양한 방법으로 자산을 불릴 수 있는 좋은 흐름을 보이고 있습니다. 주식이나 펀드 등 금융 투자에서 안정적인 수익을 기대할 수 있으며, 부동산 투자를 고려한다면 좋은 물건을 찾을 수 있는 시기입니다. 다만 높은 수익률만을 쫓지 말고 위험도와 안정성을 함께 고려해서 분산 투자하는 것이 현명합니다. 새로운 투자 상품이나 기회가 찾아올 수 있으니 충분히 공부하고 조사한 후 결정하세요. 장기적인 관점에서 꾸준히 투자하는 것이 단기 수익보다 더 큰 성과를 가져다줄 것입니다. 전문가의 조언을 구하거나 재테크 스터디에 참여하는 것도 도움이 될 것입니다."
   };
 
-  // 월별 재물운 데이터
-  const monthData = {
-    thisMonth: {
-      text: "이번 달 재물운은 새로운 기회와 안정적인 흐름이 함께하는 좋은 시기입니다. 월 초부터 수입과 관련된 좋은 소식이나 기회가 찾아올 수 있으며, 기존 투자에서도 만족스러운 수익을 얻을 수 있을 것입니다. 중순경에는 예상치 못한 부수입이나 환급금 등이 생길 수 있으니 관련 서류나 절차를 미리 점검해보세요. 하순으로 갈수록 지출 관리에 더욱 신경 써야 하며, 큰 금액의 구매나 투자는 신중하게 결정하는 것이 좋겠습니다. 가족이나 친구와의 금전 거래는 명확한 약속을 정하고 진행하시기 바랍니다."
-    },
-    nextMonth: {
-      text: "다음 달은 재물운이 더욱 상승세를 타며 큰 기대를 걸어볼 만한 시기입니다. 새로운 수입원이 생기거나 기존 수입이 증가할 가능성이 높으며, 투자나 사업에서도 좋은 성과를 거둘 수 있을 것입니다. 부동산이나 장기 투자를 고려하고 있다면 좋은 기회를 잡을 수 있는 달이니 시장 동향을 주의 깊게 살펴보세요. 다만 수입이 늘어나는 만큼 세금이나 각종 비용도 함께 고려해야 하니 전체적인 수지를 계산해보시기 바랍니다. 저축 목표를 상향 조정하고 더 적극적인 재정 계획을 세워보는 것도 좋겠습니다."
-    },
-    thirdMonth: {
-      text: "3개월 후는 그동안의 재정 관리 노력이 큰 결실을 맺는 시기가 될 것입니다. 꾸준히 추진해온 투자나 사업이 본격적인 수익을 창출하기 시작하며, 저축 목표도 상당 부분 달성할 수 있을 것입니다. 새로운 재정 목표를 설정하고 더 큰 계획을 세우기에 적절한 시기이니 장기적인 관점에서 접근해보세요. 부동산 취득이나 큰 투자를 계획하고 있다면 이 시기에 실행에 옮기는 것을 고려해볼 만합니다. 가족의 재정 안정과 미래를 위한 준비도 함께 고려하시면 더욱 의미 있는 성과를 얻을 수 있을 것입니다."
-    }
-  };
-
-  const activeWealthData = wealthData[activePeriod];
-  const activeTypeData = typeData[activeType];
-  const activeMonthData = monthData[activeMonth];
+  const activeManagementData = managementData[activeManagement];
 
   return (
     <div className={styles.screen}>
@@ -152,9 +134,9 @@ export default function WealthResult() {
 
       <main className={styles.body}>
         {/* 상단 히어로 */}
-        <div className={styles.heroSection}>
-          <div className={styles.hero}>
-            <p className={styles.heroText}>
+        <div className={styles.heroSection} style={{ paddingBottom: '40px' }}>
+          <div className={styles.hero} style={{ gap: '0px', marginTop: '-40px' }}>
+            <p className={styles.heroText} style={{ marginBottom: '-5px' }}>
               나를 기다리는<br />
               재물의 기운은 어디에?
             </p>
@@ -164,39 +146,107 @@ export default function WealthResult() {
                 alt="coin icon"
                 width={120}
                 height={120}
-                className={styles.heroIconImg}
               />
             </div>
           </div>
         </div>
 
-        {/* 재물운 전망 */}
+        {/* 타고난 재물운 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>재물운 전망</h2>
+          <h2 className={styles.sectionTitle}>타고난 재물운</h2>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px', marginBottom: '20px' }}>
+            <div style={{ fontSize: '32px', fontWeight: '600', color: '#8D55E8' }}>{bornWealthData.score}점</div>
+          </div>
 
-          {/* 단기/장기 탭 */}
+          <ExpandableText
+            text={bornWealthData.text}
+            expanded={expandedBorn}
+            onToggle={() => setExpandedBorn(true)}
+          />
+
+          {expandedBorn && (
+            <div className={styles.coupangBox}>
+              <div className={styles.coupangHead}>
+                {getUserNameFromCookie()}님을 위한 행운의 상품
+                <span className={styles.coupangHeadArrow}>›</span>
+              </div>
+              <div
+                className={styles.coupangItem}
+                onClick={() => window.open('https://example.com/coupang-product', '_blank')}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.coupangThumb} />
+                <div className={styles.coupangMeta}>
+                  <div className={styles.coupangTitle}>
+                    행운의 황금 두꺼비 장식품
+                  </div>
+                  <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </SectionCard>
+
+        {/* 현재 재물운 */}
+        <SectionCard>
+          <h2 className={styles.sectionTitle}>현재 재물운</h2>
+
+          <ExpandableText
+            text={currentWealthData.text}
+            expanded={expandedCurrent}
+            onToggle={() => setExpandedCurrent(true)}
+          />
+
+          {expandedCurrent && (
+            <div className={styles.coupangBox}>
+              <div className={styles.coupangHead}>
+                {getUserNameFromCookie()}님을 위한 행운의 상품
+                <span className={styles.coupangHeadArrow}>›</span>
+              </div>
+              <div
+                className={styles.coupangItem}
+                onClick={() => window.open('https://example.com/coupang-product', '_blank')}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.coupangThumb} />
+                <div className={styles.coupangMeta}>
+                  <div className={styles.coupangTitle}>
+                    재물 복주머니 세트
+                  </div>
+                  <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </SectionCard>
+
+        {/* 재물 관리 */}
+        <SectionCard>
+          <h2 className={styles.sectionTitle}>재물 관리</h2>
+
+          {/* 재물 모으기/손실 막기 탭 */}
           <div className={`${styles.tabRow} ${styles.tabRow2}`}>
             <button
-              className={`${styles.tab} ${activePeriod === 'shortTerm' ? styles.tabActive : ''}`}
-              onClick={() => setActivePeriod('shortTerm')}
+              className={`${styles.tab} ${activeManagement === 'gain' ? styles.tabActive : ''}`}
+              onClick={() => setActiveManagement('gain')}
             >
-              단기 전망
+              재물 모으는 법
             </button>
             <button
-              className={`${styles.tab} ${activePeriod === 'longTerm' ? styles.tabActive : ''}`}
-              onClick={() => setActivePeriod('longTerm')}
+              className={`${styles.tab} ${activeManagement === 'loss' ? styles.tabActive : ''}`}
+              onClick={() => setActiveManagement('loss')}
             >
-              장기 전망
+              재물 손실 막는 법
             </button>
           </div>
 
           <ExpandableText
-            text={activeWealthData.text}
-            expanded={expandedWealth}
-            onToggle={() => setExpandedWealth(true)}
+            text={activeManagementData.text}
+            expanded={expandedManagement}
+            onToggle={() => setExpandedManagement(true)}
           />
 
-          {expandedWealth && (
+          {expandedManagement && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
                 {getUserNameFromCookie()}님을 위한 행운의 상품
@@ -210,7 +260,7 @@ export default function WealthResult() {
                 <div className={styles.coupangThumb} />
                 <div className={styles.coupangMeta}>
                   <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
+                    가계부 & 재테크 플래너
                   </div>
                   <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
                 </div>
@@ -219,44 +269,17 @@ export default function WealthResult() {
           )}
         </SectionCard>
 
-        {/* 재물 유형별 운세 */}
+        {/* 재테크 재물운 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>재물 유형별 운세</h2>
-
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activeType === 'income' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('income')}
-            >
-              수입운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'investment' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('investment')}
-            >
-              투자운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'savings' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('savings')}
-            >
-              저축운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'spending' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('spending')}
-            >
-              지출운
-            </button>
-          </div>
+          <h2 className={styles.sectionTitle}>재테크 재물운</h2>
 
           <ExpandableText
-            text={activeTypeData.text}
-            expanded={expandedType}
-            onToggle={() => setExpandedType(true)}
+            text={investData.text}
+            expanded={expandedInvest}
+            onToggle={() => setExpandedInvest(true)}
           />
 
-          {expandedType && (
+          {expandedInvest && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
                 {getUserNameFromCookie()}님을 위한 행운의 상품
@@ -270,61 +293,7 @@ export default function WealthResult() {
                 <div className={styles.coupangThumb} />
                 <div className={styles.coupangMeta}>
                   <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
-                  </div>
-                  <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        {/* 월별 재물운 */}
-        <SectionCard>
-          <h2 className={styles.sectionTitle}>월별 재물운</h2>
-
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activeMonth === 'thisMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActiveMonth('thisMonth')}
-            >
-              이번 달
-            </button>
-            <button
-              className={`${styles.tab} ${activeMonth === 'nextMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActiveMonth('nextMonth')}
-            >
-              다음 달
-            </button>
-            <button
-              className={`${styles.tab} ${activeMonth === 'thirdMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActiveMonth('thirdMonth')}
-            >
-              3개월 후
-            </button>
-          </div>
-
-          <ExpandableText
-            text={activeMonthData.text}
-            expanded={expandedMonth}
-            onToggle={() => setExpandedMonth(true)}
-          />
-
-          {expandedMonth && (
-            <div className={styles.coupangBox}>
-              <div className={styles.coupangHead}>
-                {getUserNameFromCookie()}님을 위한 행운의 상품
-                <span className={styles.coupangHeadArrow}>›</span>
-              </div>
-              <div
-                className={styles.coupangItem}
-                onClick={() => window.open('https://example.com/coupang-product', '_blank')}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className={styles.coupangThumb} />
-                <div className={styles.coupangMeta}>
-                  <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
+                    재테크 입문서 & 투자 가이드북
                   </div>
                   <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
                 </div>
@@ -350,23 +319,7 @@ export default function WealthResult() {
                 <div>
                   <div className={styles.moreTitle}>오늘의 운세</div>
                   <div className={styles.moreDesc}>
-                    오늘 하루 나의 행운은 어디서 올까?
-                  </div>
-                </div>
-              </div>
-              <div
-                className={styles.moreItem}
-                onClick={() => router.push("/yearly-result")}
-              >
-                <img
-                  src="/icon/icon_clover.png"
-                  alt="연간 운세"
-                  className={styles.moreIcon}
-                />
-                <div>
-                  <div className={styles.moreTitle}>연간 운세</div>
-                  <div className={styles.moreDesc}>
-                    올 한해 나의 행운은 어디서 올까?
+                    오늘 하루, 나를 비추는 행운은?
                   </div>
                 </div>
               </div>
@@ -383,6 +336,22 @@ export default function WealthResult() {
                   <div className={styles.moreTitle}>월간 운세</div>
                   <div className={styles.moreDesc}>
                     이번 달 나의 행운은 어디서 올까?
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/yearly-result")}
+              >
+                <img
+                  src="/icon/icon_clover.png"
+                  alt="연간 운세"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>연간 운세</div>
+                  <div className={styles.moreDesc}>
+                    올 한 해 나의 행운 포인트는?
                   </div>
                 </div>
               </div>

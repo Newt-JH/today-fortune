@@ -23,6 +23,14 @@ background:#fff; border-radius:24px; padding:16px;
 margin:0 -16px 20px;
 }
 
+/* 마지막 카드 (CTA)는 아래쪽 border-radius 없음 */
+.card:last-of-type {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 /* 히어로 카드 */
 .heroCard { padding:20px 16px; } /* 상단은 여백 조금 넉넉히 */
 
@@ -42,7 +50,7 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
 /* 점수 – 더 두껍게 */
 .heroScore { font-size:36px; font-weight:600; letter-spacing:-0.02em; }
 /* 아이콘+문구 중앙 정렬, 문구도 중앙 정렬 */
-.heroRow { display:flex; align-items:center; justify-content:center; gap:20px; width:100%; margin-top:-30px; }
+.heroRow { display:flex; align-items:center; justify-content:center; gap:20px; width:100%; margin-top:-40px; }
 .heroIcon {
     width: 80px;
     height: 80px;
@@ -169,10 +177,14 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     padding: 0 2px; /* 텍스트와 맞춤 */
   }
 
-/* 2개 탭용 (상반기/하반기) */
+/* 2개 탭용 (상반기/하반기) - 연결된 배경 스타일 */
 .tabRow2 {
-  grid-template-columns: repeat(2, 1fr);
-  padding: 0 2px; /* 텍스트와 맞춤 */
+  display: flex;
+  background: #ECECEC;
+  border-radius: 100px;
+  padding: 4px;
+  gap: 0;
+  margin-top: 20px;
 }
 
 /* 4개 탭용 (태아 운세) */
@@ -200,9 +212,29 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     border-radius: 999px;
     border: 1px solid #AEAEAE;
     background: #FFF;
-    color: #707070;
+    color: #AEAEAE;
     font-weight: 600;  /* 600 SemiBold 14px */
   }
+
+  /* 2개 탭에서 사용할 스타일 (상반기/하반기) */
+  .tabRow2 .tab {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #707070;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .tabRow2 .tabActive {
+    background: #8D55E8;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
   .tabActive{
     background:#8D55E8;
     color:#fff;
@@ -240,7 +272,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     border-bottom-right-radius: 12px;
   }
 .expandWrap { display:grid; place-items:center; margin-top:16px; padding:0 16px; }
-.outlineBtn { width:320px; height:48px; border-radius:13px; border:1px solid #D1D5DB; background:#fff; font-weight:500; font-size:16px; color:#404040; } /* 500 Medium 16px, 320px x 48px, #404040 색상 */
+.outlineBtn { width:360px; height:48px; border-radius:13px; border:1px solid #AEAEAE; background:#fff; font-weight:500; font-size:16px; color:#404040; } /* 500 Medium 16px, 360px x 48px, #404040 색상 */
 
 /* 구분선 */
 .divider {
@@ -320,10 +352,6 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     justify-content: center;
     padding: 20px 0 40px;
   }
-  
-
-/* 마지막 카드(CTA)와 하단 흰 배경이 자연스럽게 이어지도록 */
-.card:last-of-type { margin-bottom: 0; }
 
 /* 하단 풀블리드 흰 바닥 — 화면 남는 높이 모두 차지 */
 .bottomWhite{
@@ -338,12 +366,12 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
 .ctaCenter{
   display: flex;
   justify-content: center;
-  padding: 8px 0 10px;   /* 버튼 아래 살짝만 */
-  max-width: 340px;
-  margin: 0 auto;
+  padding: 0 8px 8px;   /* 좌우, 하단 여백 */
+  max-width: 100%;
+  margin: 0;
 }
-.ctaBtn{ background:none; border:none; padding:0; cursor:pointer; }
-.ctaImg{ display:block; width:320px; height:auto; }
+.ctaBtn{ background:none; border:none; padding:0; cursor:pointer; width: 100%; }
+.ctaImg{ display:block; width:100%; height:auto; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 
 /* 리워드 모달 */
 .modalOverlay {

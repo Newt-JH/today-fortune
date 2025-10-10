@@ -71,10 +71,10 @@ export default function LandingClient() {
     return () => clearInterval(t);
   }, [isComplete]);
 
-  // 0 → 100 진행 (~7.5s)
+  // 0 → 100 진행 (5s)
   useEffect(() => {
     if (isComplete) return;
-    const step = 1, intervalMs = 75;
+    const step = 1, intervalMs = 50;
     const t = setInterval(() => {
       setPercent((p) => {
         const np = Math.min(100, p + step);
@@ -197,18 +197,18 @@ export default function LandingClient() {
             className={styles.heroImg}
         />
         )}
+        {!isComplete && <div className={styles.percent}>{percent}%</div>}
       </section>
 
       {/* ② 문구 블록 (이미지와 광고 사이) */}
       <section className={styles.copy}>
-        {!isComplete && <div className={styles.percent}>{percent}%</div>}
         <h2 className={styles.captionTitle}>
           {isComplete ? '운세 분석 완료!' : '운세를 분석 중입니다'}
         </h2>
         <p className={styles.captionDesc}>
           {isComplete
-            ? <>입력하신 사주 정보를 기반으로<br />운세 분석을 완료하였습니다.</>
-            : <>사주의 명리학을 기반으로 AI를 적용하여<br />운세를 산출하고 있습니다</>}
+            ? <>입력하신 사주 정보를 기반으로<br />운세 분석을 완료하였습니다</>
+            : <>사주와 명리학을 기반으로 AI를 적용하여<br />운세를 분석하고 있습니다</>}
         </p>
       </section>
 

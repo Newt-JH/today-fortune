@@ -28,18 +28,31 @@ export default function TimePickerSheet({
 }: { value: string; onSelect: (v: string) => void }) {
   return (
     <div className={styles.list} role="listbox" aria-label="태어난 시간 선택">
-      {OPTIONS.map((o) => (
-        <button
-          key={o.value}
-          className={`${styles.item} ${value === o.value ? styles.active : ''}`}
-          onClick={() => onSelect(o.value)}
-          role="option"
-          aria-selected={value === o.value}
-        >
-          <span>{o.label}</span>
-          {value === o.value ? <span className={styles.check}>✓</span> : <span className={styles.chev}>›</span>}
-        </button>
-      ))}
+      {OPTIONS.map((o) => {
+        const isActive = value === o.value;
+        return (
+          <button
+            key={o.value}
+            className={`${styles.item} ${isActive ? styles.active : ''}`}
+            onClick={() => onSelect(o.value)}
+            role="option"
+            aria-selected={isActive}
+          >
+            <span>{o.label}</span>
+            <div className={styles.check}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M4 10L8 14L16 6"
+                  className={isActive ? styles.checkActive : styles.checkInactive}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -39,9 +39,11 @@
   grid-row: 2;
   width: 100%;
   display: flex;
+  flex-direction: column;           /* 이미지와 퍼센트를 세로로 배치 */
   justify-content: center;
-  align-items: center;              /* 수직 중앙 */
+  align-items: center;              /* 수평 중앙 */
   min-height: 180px;                /* 👈 영역만 확보 (원하면 160~200px로 미세조정) */
+  gap: 24px;                        /* 이미지와 퍼센트 사이 간격 */
 }
 
 /* 이미지 확장 제거: 원본 픽셀 그대로 표시 */
@@ -59,7 +61,7 @@
   text-align: center;
   place-self: center;
 }
-.percent { margin: 6px 0 6px; font-size: 20px; font-weight: 800; color: #1f9d55; letter-spacing: .2px; }
+.percent { margin: 0; font-size: 20px; font-weight: 800; color: #1f9d55; letter-spacing: .2px; }
 .captionTitle { font-size: 18px; font-weight: 600; margin: 0; }
 .captionDesc  { margin: 10px 0 0; font-weight: 400; font-size: 14px; color: var(--brand-muted); line-height: 1.5; }
 

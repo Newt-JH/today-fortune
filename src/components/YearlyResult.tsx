@@ -84,7 +84,7 @@ export default function YearlyResult() {
   const router = useRouter();
   const [activeHalf, setActiveHalf] = useState<'first' | 'second'>('first');
   const [expandedYearly, setExpandedYearly] = useState(false);
-  const [activeTheme, setActiveTheme] = useState<'love' | 'health' | 'wisdom' | 'wish'>('love');
+  const [activeTheme, setActiveTheme] = useState<'love' | 'health' | 'job' | 'wish'>('love');
   const [expandedTheme, setExpandedTheme] = useState(false);
   const [activeMonth, setActiveMonth] = useState<'jul' | 'aug' | 'sep' | 'oct' | 'nov' | 'dec'>('jul');
   const [expandedMonth, setExpandedMonth] = useState(false);
@@ -109,11 +109,11 @@ export default function YearlyResult() {
     health: {
       text: "건강운은 전반적으로 안정적이지만 꾸준한 관리가 필요한 해입니다. 특히 면역력 강화에 힘써야 하며, 규칙적인 운동과 균형 잡힌 식단을 유지하는 것이 매우 중요합니다. 봄철에는 알레르기나 호흡기 질환에 주의해야 하며, 여름철에는 무리한 다이어트나 과도한 운동을 피하는 것이 좋습니다. 가을에는 환절기 건강 관리에 특히 신경 써야 하며, 겨울철에는 관절 건강과 혈액 순환에 각별한 주의가 필요합니다. 스트레스 관리도 매우 중요한 요소이므로, 충분한 휴식과 취미 활동을 통해 마음의 안정을 찾으시기 바랍니다. 정기 건강검진을 받는 것도 잊지 마시고, 작은 증상이라도 무시하지 말고 전문의의 진료를 받는 것이 현명합니다. 전체적으로는 건강한 한 해가 될 것이니 과도한 걱정은 하지 마세요."
     },
-    wisdom: {
-      text: "지혜운은 학습과 성장에 매우 유리한 해입니다. 새로운 지식을 습득하고 기존의 능력을 발전시키기에 최적의 시기이며, 특히 창의적인 사고와 통찰력이 크게 향상될 것입니다. 독서나 강의 수강, 새로운 기술 습득에 투자하는 시간과 노력이 미래에 큰 자산이 될 것입니다. 직장에서는 전문성을 인정받을 기회가 많아지며, 동료들로부터 조언을 구하는 일이 늘어날 것입니다. 학생이라면 성적 향상은 물론, 진로에 대한 명확한 방향을 찾을 수 있는 해가 될 것입니다. 다양한 분야의 사람들과 교류하며 견문을 넓히는 것도 매우 도움이 될 것이며, 해외 여행이나 문화 체험을 통해 새로운 관점을 얻을 수 있습니다. 지혜는 하루아침에 쌓이는 것이 아니니, 꾸준히 노력하고 인내심을 갖고 임한다면 놀라운 성장을 경험할 수 있을 것입니다."
+    job: {
+      text: "직장운은 학습과 성장에 매우 유리한 해입니다. 새로운 지식을 습득하고 기존의 능력을 발전시키기에 최적의 시기이며, 특히 창의적인 사고와 통찰력이 크게 향상될 것입니다. 독서나 강의 수강, 새로운 기술 습득에 투자하는 시간과 노력이 미래에 큰 자산이 될 것입니다. 직장에서는 전문성을 인정받을 기회가 많아지며, 동료들로부터 조언을 구하는 일이 늘어날 것입니다. 학생이라면 성적 향상은 물론, 진로에 대한 명확한 방향을 찾을 수 있는 해가 될 것입니다. 다양한 분야의 사람들과 교류하며 견문을 넓히는 것도 매우 도움이 될 것이며, 해외 여행이나 문화 체험을 통해 새로운 관점을 얻을 수 있습니다. 지혜는 하루아침에 쌓이는 것이 아니니, 꾸준히 노력하고 인내심을 갖고 임한다면 놀라운 성장을 경험할 수 있을 것입니다."
     },
     wish: {
-      text: "소원운은 오랫동안 간직해온 꿈과 희망이 현실로 이루어질 가능성이 높은 해입니다. 특히 상반기에 세운 목표들이 하반기에 구체적인 성과로 나타날 것이며, 예상보다 빠른 속도로 원하는 바를 달성할 수 있습니다. 직업적인 목표나 개인적인 성취 모두에서 긍정적인 결과를 기대할 수 있으며, 주변 사람들의 도움과 지지도 크게 받을 것입니다. 다만 너무 큰 욕심을 부리거나 비현실적인 목표를 세우는 것은 피해야 하며, 현실적이고 달성 가능한 범위에서 계획을 세우는 것이 중요합니다. 작은 성취들이 모여 큰 결실을 이루게 될 것이니, 매 순간의 노력을 소홀히 하지 마시기 바랍니다. 가족이나 친구들과 꿈을 공유하고 함께 응원받는다면 더욱 큰 동기부여가 될 것이며, 혼자서는 이루기 어려운 일도 주변의 도움으로 가능해질 것입니다."
+      text: "소망운은 오랫동안 간직해온 꿈과 희망이 현실로 이루어질 가능성이 높은 해입니다. 특히 상반기에 세운 목표들이 하반기에 구체적인 성과로 나타날 것이며, 예상보다 빠른 속도로 원하는 바를 달성할 수 있습니다. 직업적인 목표나 개인적인 성취 모두에서 긍정적인 결과를 기대할 수 있으며, 주변 사람들의 도움과 지지도 크게 받을 것입니다. 다만 너무 큰 욕심을 부리거나 비현실적인 목표를 세우는 것은 피해야 하며, 현실적이고 달성 가능한 범위에서 계획을 세우는 것이 중요합니다. 작은 성취들이 모여 큰 결실을 이루게 될 것이니, 매 순간의 노력을 소홀히 하지 마시기 바랍니다. 가족이나 친구들과 꿈을 공유하고 함께 응원받는다면 더욱 큰 동기부여가 될 것이며, 혼자서는 이루기 어려운 일도 주변의 도움으로 가능해질 것입니다."
     }
   };
 
@@ -162,19 +162,18 @@ export default function YearlyResult() {
 
       <main className={styles.body}>
         {/* 상단 히어로 */}
-        <div className={styles.heroSection}>
-          <div className={styles.hero}>
-            <p className={styles.heroText}>
+        <div className={styles.heroSection} style={{ paddingBottom: '40px' }}>
+          <div className={styles.hero} style={{ gap: '0px', marginTop: '-40px' }}>
+            <p className={styles.heroText} style={{ marginBottom: '-5px' }}>
               올 한 해<br />
-              나의 명운 포인트는?
+              나의 행운 포인트는?
             </p>
             <div className={styles.heroIcon}>
               <img
                 src="/icon/icon_clover.png"
                 alt="clover icon"
-                width={80}
-                height={80}
-                className={styles.heroIconImg}
+                width={120}
+                height={120}
               />
             </div>
           </div>
@@ -254,16 +253,16 @@ export default function YearlyResult() {
               건강운
             </button>
             <button
-              className={`${styles.tab} ${activeTheme === 'wisdom' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTheme('wisdom')}
+              className={`${styles.tab} ${activeTheme === 'job' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTheme('job')}
             >
-              지혜운
+              직장운
             </button>
             <button
               className={`${styles.tab} ${activeTheme === 'wish' ? styles.tabActive : ''}`}
               onClick={() => setActiveTheme('wish')}
             >
-              소원운
+              소망운
             </button>
           </div>
 
@@ -388,7 +387,7 @@ export default function YearlyResult() {
                 <div>
                   <div className={styles.moreTitle}>오늘의 운세</div>
                   <div className={styles.moreDesc}>
-                    오늘 하루 나의 행운은 어디서 올까?
+                    오늘 하루, 나를 비추는 행운은?
                   </div>
                 </div>
               </div>

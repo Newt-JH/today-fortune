@@ -82,57 +82,42 @@ function SectionCard({ children }: { children: React.ReactNode }) {
 
 export default function LoveResult() {
   const router = useRouter();
-  const [activeStatus, setActiveStatus] = useState<'single' | 'couple'>('single');
-  const [expandedLove, setExpandedLove] = useState(false);
-  const [activeType, setActiveType] = useState<'meeting' | 'relationship' | 'marriage' | 'harmony'>('meeting');
-  const [expandedType, setExpandedType] = useState(false);
-  const [activePeriod, setActivePeriod] = useState<'thisWeek' | 'thisMonth' | 'nextMonth'>('thisWeek');
-  const [expandedPeriod, setExpandedPeriod] = useState(false);
+  const [expandedBornLove, setExpandedBornLove] = useState(false);
+  const [expandedYearlyLove, setExpandedYearlyLove] = useState(false);
+  const [expandedTodayLove, setExpandedTodayLove] = useState(false);
+  const [expandedYearlyChart, setExpandedYearlyChart] = useState(false);
 
-  // 애정운 데이터
-  const loveData = {
-    single: {
-      score: 91,
-      text: "솔로인 당신에게는 특별한 인연이 기다리고 있는 매우 좋은 시기입니다. 예상치 못한 곳에서 운명적인 만남이 찾아올 수 있으며, 첫 인상부터 서로에게 강한 호감을 느낄 가능성이 높습니다. 친구의 소개나 취미 모임, 직장에서의 새로운 만남 등 다양한 경로를 통해 좋은 사람을 만날 수 있을 것입니다. 너무 조급해하지 말고 자연스러운 흐름에 맡기는 것이 중요하며, 자신만의 매력을 어필할 수 있는 기회도 많이 생길 것입니다. 외모보다는 내면의 아름다움과 진실한 마음이 상대방의 마음을 움직이는 열쇠가 될 것이니 자신감을 가지시기 바랍니다. 새로운 취미나 관심사를 개발하면서 같은 관심사를 가진 사람들과 만날 기회를 늘려보세요. 온라인 모임이나 소셜 활동에도 적극적으로 참여하면 좋은 결과를 얻을 수 있을 것입니다."
-    },
-    couple: {
-      score: 88,
-      text: "연인이 있는 당신에게는 관계가 한층 더 깊어지고 발전하는 아름다운 시기가 찾아왔습니다. 서로에 대한 이해와 사랑이 더욱 깊어지며, 미래에 대한 구체적인 계획을 함께 세워볼 수 있는 좋은 때입니다. 작은 갈등이 있었다면 자연스럽게 해결될 것이며, 오히려 이를 통해 더욱 단단한 관계로 발전할 수 있습니다. 상대방의 마음을 이해하려는 노력과 진실한 소통이 관계를 더욱 발전시키는 중요한 요소가 될 것입니다. 특별한 기념일이나 이벤트를 계획해보시면 두 사람의 추억이 더욱 소중해질 것이며, 서로에 대한 애정도 더욱 확인할 수 있을 것입니다. 결혼을 생각하고 있다면 구체적인 계획을 세우기에 매우 좋은 시기이니 진지한 대화를 나누어보시기 바랍니다. 가족들에게 연인을 소개하거나 양가 부모님을 만나는 것도 좋은 결과를 가져올 것입니다."
-    }
+  // 타고난 애정운 데이터
+  const bornLoveData = {
+    score: 70,
+    text: "타고난 (★☆★) 남성의 애정운을 예상하면, 매력과 관계 맺기에 강한 기운을 가지고 있습니다. 자신이 좋아하는 사람에게는 적극적으로 다가가고 자신의 호의를 잘 전달합니다. 이들은 사랑에 빠지면 깊이 몰입하며 상대방에게 헌신적인 모습을 보입니다. 또한, 이들은 대화를 즐기고 상대방의 말을 잘 들어주어, 관계에서 긍정적인 분위기를 만듭니다."
   };
 
-  // 애정 유형별 데이터
-  const typeData = {
-    meeting: {
-      text: "만남운은 현재 최고조에 달해 있어 새로운 인연을 만날 가능성이 매우 높습니다. 친구들의 모임이나 회사 행사, 취미 활동 등에서 특별한 사람을 만날 수 있으며, 온라인을 통한 만남도 좋은 결과를 가져올 수 있습니다. 첫 만남에서부터 서로에게 호감을 느낄 가능성이 높으니 자신감을 가지고 적극적으로 다가가보세요. 외모보다는 진실한 마음과 따뜻한 성격이 상대방의 마음을 사로잡는 중요한 요소가 될 것입니다. 너무 완벽한 사람을 찾으려 하지 말고, 마음이 편안하고 대화가 잘 통하는 사람에게 관심을 가져보시기 바랍니다. 새로운 환경이나 장소에 자주 나가면서 만남의 기회를 늘려보는 것도 좋은 방법입니다."
-    },
-    relationship: {
-      text: "연애운은 기존 관계를 더욱 발전시키고 새로운 단계로 나아가기에 완벽한 시기입니다. 연인과의 관계에서 서로에 대한 이해가 깊어지며, 진정한 사랑을 확인할 수 있는 순간들이 많이 찾아올 것입니다. 작은 다툼이나 오해가 있었다면 이번 기회에 솔직한 대화를 통해 해결하시기 바랍니다. 서로의 다른 점을 인정하고 받아들이는 것이 관계 발전의 열쇠가 될 것입니다. 함께하는 시간을 늘리고 새로운 경험을 공유하면서 더욱 돈독한 관계를 만들어가세요. 상대방의 가족이나 친구들과도 좋은 관계를 유지하려 노력하면 연애에 큰 도움이 될 것입니다."
-    },
-    marriage: {
-      text: "결혼운은 매우 길한 기운으로 가득하여 평생 함께할 반려자를 만나거나 기존 연인과의 결혼을 진지하게 고려할 수 있는 시기입니다. 솔로라면 결혼을 전제로 한 진지한 만남이 찾아올 수 있으며, 커플이라면 프로포즈나 혼담이 오갈 가능성이 높습니다. 양가 부모님의 축복과 지지를 받을 수 있는 시기이니 가족들과의 만남을 주선해보시기 바랍니다. 결혼 준비를 하고 있다면 모든 일이 순조롭게 진행될 것이며, 주변 사람들의 도움도 많이 받을 수 있을 것입니다. 경제적인 준비와 함께 정신적인 준비도 철저히 하시면 행복한 결혼 생활의 기반을 마련할 수 있습니다. 서로에 대한 신뢰와 존중을 바탕으로 한 관계라면 반드시 좋은 결실을 맺을 것입니다."
-    },
-    harmony: {
-      text: "화합운은 모든 인간관계에서 조화와 평화를 가져다주는 아름다운 시기입니다. 연인과의 관계에서는 서로를 이해하고 배려하는 마음이 더욱 깊어지며, 작은 갈등도 쉽게 해결될 것입니다. 가족들과의 관계도 더욱 원만해지고, 친구들과의 우정도 더욱 돈독해질 것입니다. 주변 사람들로부터 사랑받고 신뢰받는 시기이니 먼저 다가가서 마음을 나누어보세요. 연인이나 배우자와의 관계에서 서로의 의견을 존중하고 타협점을 찾으려 노력하면 더욱 아름다운 관계를 만들 수 있습니다. 혼자 해결하기 어려운 문제가 있다면 가까운 사람들의 조언을 구하는 것도 좋은 방법입니다. 사랑하는 사람들과 함께하는 시간을 늘리고 감사의 마음을 표현하면 더욱 큰 행복을 느낄 수 있을 것입니다."
-    }
+  // 올해의 애정운 데이터
+  const yearlyLoveData = {
+    score: 70,
+    text: "부일일 (★☆★) 남성의 애정운을 예상하면, 매력과 관계 맺기에 강한 기운을 가지고 있습니다. 자신이 좋아하는 사람에게는 적극적으로 다가가고 자신의 호의를 잘 전달합니다. 이들은 사랑에 빠지면 깊이 몰입하며 상대방에게 헌신적인 모습을 보입니다. 또한, 이들은 대화를 즐기고 상대방의 말을 잘 들어주어, 관계에서 긍정적인 분위기를 만듭니다."
   };
 
-  // 기간별 애정운 데이터
-  const periodData = {
-    thisWeek: {
-      text: "이번 주 애정운은 특별한 만남과 감동이 가득한 한 주가 될 것입니다. 주 초부터 좋은 소식이나 반가운 만남이 있을 수 있으며, 연인이 있다면 서로에 대한 애정을 확인하는 달콤한 시간을 보낼 수 있습니다. 주 중반에는 새로운 사람과의 만남이나 기존 관계의 발전이 있을 수 있으니 적극적인 자세를 보이시기 바랍니다. 주말에는 특별한 데이트나 이벤트를 계획해보세요. 로맨틱한 분위기 속에서 소중한 추억을 만들 수 있을 것입니다. 진실한 마음으로 상대방을 대하면 예상보다 좋은 반응을 얻을 수 있으니 용기를 내어보시기 바랍니다."
-    },
-    thisMonth: {
-      text: "이번 달은 애정운이 전반적으로 상승세를 타며 행복한 한 달이 될 것입니다. 월 초에는 새로운 만남의 기회가 많아지고, 중순경에는 기존 관계가 더욱 발전할 수 있는 계기가 마련될 것입니다. 하순으로 갈수록 사랑하는 사람과의 유대감이 더욱 깊어지며, 미래에 대한 구체적인 계획도 세워볼 수 있습니다. 가족이나 친구들의 지지와 축복도 받을 수 있는 시기이니 주변 사람들과의 관계도 소홀히 하지 마세요. 연인에게 작은 선물이나 편지를 준비해보시면 큰 감동을 줄 수 있을 것입니다. 솔로라면 소개팅이나 미팅에 적극적으로 참여해보시기 바랍니다."
-    },
-    nextMonth: {
-      text: "다음 달은 애정운이 절정에 달하여 평생 기억에 남을 특별한 순간들이 기다리고 있습니다. 솔로라면 운명적인 만남이 찾아올 수 있으며, 커플이라면 관계가 한 단계 더 발전할 수 있는 중요한 시기가 될 것입니다. 프로포즈나 결혼 이야기가 나올 수 있고, 양가 부모님을 만나는 자리가 마련될 수도 있습니다. 서로에 대한 진실한 마음을 확인하고 미래를 함께 그려볼 수 있는 의미 있는 시간이 될 것입니다. 조급해하지 말고 자연스러운 흐름에 맡기면서 상대방의 마음을 존중하는 자세가 중요합니다. 사랑하는 마음을 표현하는 데 주저하지 마시고, 행복한 순간들을 충분히 만끽하시기 바랍니다."
-    }
+  // 오늘의 애정운 데이터
+  const todayLoveData = {
+    score: 82,
+    text: "한밤 예정운을 오늘에 발고나봐 단순한 말 잘 듣기는 더욱 심화되며 기능에선 일부러 막습니다. 상대방이 기쁨과 슬픔을 공유할 수 있는 이해심도 높고, 배려 있는 태도를 보이기 때문에 관계가 오래 지속되는 경향이 강합니다. 사랑하는 사람과 갈등이 있을 때도 감정적으로 치우치기보다는 조리 있게 해결하려는 자세가 돋보입니다."
   };
 
-  const activeLoveData = loveData[activeStatus];
-  const activeTypeData = typeData[activeType];
-  const activePeriodData = periodData[activePeriod];
+  // 연도별 호감/연애 확률 데이터
+  const yearlyChartData = [
+    { year: 2002, age: 19, percent: 34 },
+    { year: 2003, age: 20, percent: 49 },
+    { year: 2007, age: 24, percent: 39 },
+    { year: 2008, age: 25, percent: 39 },
+    { year: 2012, age: 29, percent: 44 },
+    { year: 2013, age: 30, percent: 49 },
+    { year: 2019, age: 36, percent: 39 },
+    { year: 2020, age: 37, percent: 46 },
+    { year: 2022, age: 39, percent: 34 },
+    { year: 2023, age: 40, percent: 49 }
+  ];
 
   return (
     <div className={styles.screen}>
@@ -152,9 +137,9 @@ export default function LoveResult() {
 
       <main className={styles.body}>
         {/* 상단 히어로 */}
-        <div className={styles.heroSection}>
-          <div className={styles.hero}>
-            <p className={styles.heroText}>
+        <div className={styles.heroSection} style={{ paddingBottom: '40px' }}>
+          <div className={styles.hero} style={{ gap: '0px', marginTop: '-40px' }}>
+            <p className={styles.heroText} style={{ marginBottom: '-5px' }}>
               나의 인연은<br />
               어디에 있을까?
             </p>
@@ -164,39 +149,26 @@ export default function LoveResult() {
                 alt="heart icon"
                 width={120}
                 height={120}
-                className={styles.heroIconImg}
               />
             </div>
           </div>
         </div>
 
-        {/* 애정운 현황 */}
+        {/* 타고난 애정운 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>애정운 현황</h2>
+          <h2 className={styles.sectionTitle}>타고난 애정운</h2>
 
-          {/* 솔로/커플 탭 */}
-          <div className={`${styles.tabRow} ${styles.tabRow2}`}>
-            <button
-              className={`${styles.tab} ${activeStatus === 'single' ? styles.tabActive : ''}`}
-              onClick={() => setActiveStatus('single')}
-            >
-              솔로 운세
-            </button>
-            <button
-              className={`${styles.tab} ${activeStatus === 'couple' ? styles.tabActive : ''}`}
-              onClick={() => setActiveStatus('couple')}
-            >
-              커플 운세
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px', marginBottom: '20px' }}>
+            <div style={{ fontSize: '32px', fontWeight: '600', color: '#8D55E8' }}>{bornLoveData.score}점</div>
           </div>
 
           <ExpandableText
-            text={activeLoveData.text}
-            expanded={expandedLove}
-            onToggle={() => setExpandedLove(true)}
+            text={bornLoveData.text}
+            expanded={expandedBornLove}
+            onToggle={() => setExpandedBornLove(true)}
           />
 
-          {expandedLove && (
+          {expandedBornLove && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
                 {getUserNameFromCookie()}님을 위한 행운의 상품
@@ -219,44 +191,21 @@ export default function LoveResult() {
           )}
         </SectionCard>
 
-        {/* 애정 유형별 운세 */}
+        {/* 올해의 애정운 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>애정 유형별 운세</h2>
+          <h2 className={styles.sectionTitle}>올해의 애정운</h2>
 
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activeType === 'meeting' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('meeting')}
-            >
-              만남운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'relationship' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('relationship')}
-            >
-              연애운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'marriage' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('marriage')}
-            >
-              결혼운
-            </button>
-            <button
-              className={`${styles.tab} ${activeType === 'harmony' ? styles.tabActive : ''}`}
-              onClick={() => setActiveType('harmony')}
-            >
-              화합운
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px', marginBottom: '20px' }}>
+            <div style={{ fontSize: '32px', fontWeight: '600', color: '#8D55E8' }}>{yearlyLoveData.score}점</div>
           </div>
 
           <ExpandableText
-            text={activeTypeData.text}
-            expanded={expandedType}
-            onToggle={() => setExpandedType(true)}
+            text={yearlyLoveData.text}
+            expanded={expandedYearlyLove}
+            onToggle={() => setExpandedYearlyLove(true)}
           />
 
-          {expandedType && (
+          {expandedYearlyLove && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
                 {getUserNameFromCookie()}님을 위한 행운의 상품
@@ -279,38 +228,21 @@ export default function LoveResult() {
           )}
         </SectionCard>
 
-        {/* 기간별 애정운 */}
+        {/* 오늘의 애정운 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>기간별 애정운</h2>
+          <h2 className={styles.sectionTitle}>오늘의 애정운</h2>
 
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activePeriod === 'thisWeek' ? styles.tabActive : ''}`}
-              onClick={() => setActivePeriod('thisWeek')}
-            >
-              이번 주
-            </button>
-            <button
-              className={`${styles.tab} ${activePeriod === 'thisMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActivePeriod('thisMonth')}
-            >
-              이번 달
-            </button>
-            <button
-              className={`${styles.tab} ${activePeriod === 'nextMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActivePeriod('nextMonth')}
-            >
-              다음 달
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px', marginBottom: '20px' }}>
+            <div style={{ fontSize: '32px', fontWeight: '600', color: '#8D55E8' }}>{todayLoveData.score}점</div>
           </div>
 
           <ExpandableText
-            text={activePeriodData.text}
-            expanded={expandedPeriod}
-            onToggle={() => setExpandedPeriod(true)}
+            text={todayLoveData.text}
+            expanded={expandedTodayLove}
+            onToggle={() => setExpandedTodayLove(true)}
           />
 
-          {expandedPeriod && (
+          {expandedTodayLove && (
             <div className={styles.coupangBox}>
               <div className={styles.coupangHead}>
                 {getUserNameFromCookie()}님을 위한 행운의 상품
@@ -330,6 +262,190 @@ export default function LoveResult() {
                 </div>
               </div>
             </div>
+          )}
+        </SectionCard>
+
+        {/* 연도별 호감/연애 확률 */}
+        <SectionCard>
+          <h2 className={styles.sectionTitle}>연도별 혼인/연애 확률</h2>
+
+          <div style={{ marginTop: '20px', marginBottom: '10px', position: 'relative', overflow: 'hidden', maxHeight: !expandedYearlyChart ? '165px' : 'none' }}>
+            <div style={{ fontSize: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', fontSize: '12px', color: '#707070', fontWeight: '400', paddingLeft: '8px' }}>
+                <span style={{ width: '120px', textAlign: 'center' }}>년도(나이)</span>
+                <span style={{ flex: '1', textAlign: 'center' }}>혼인/연애 확률</span>
+              </div>
+
+              {/* 펼쳐보기 전에는 처음 2개만 명확하게 표시 */}
+              <div style={{ position: 'relative' }}>
+                {yearlyChartData.slice(0, 2).map((item, index) => (
+                  <div key={index} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <span style={{
+                        width: '120px',
+                        color: '#404040',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        textAlign: 'center'
+                      }}>
+                        {item.year}년({item.age}세)
+                      </span>
+                      <div style={{
+                        flex: '1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: `${item.percent}%`,
+                          maxWidth: '100%',
+                          height: '10px',
+                          background: '#8D55E840',
+                          borderRadius: '5px'
+                        }} />
+                        <span style={{
+                          color: '#404040',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          minWidth: '45px',
+                          textAlign: 'left'
+                        }}>
+                          {item.percent}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* 펼쳐보기 전에만 보이는 항목 - 3번째만 명확하게 */}
+                {!expandedYearlyChart && yearlyChartData.slice(2, 3).map((item, index) => (
+                  <div key={`third-${index}`} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <span style={{
+                        width: '120px',
+                        color: '#404040',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        textAlign: 'center'
+                      }}>
+                        {item.year}년({item.age}세)
+                      </span>
+                      <div style={{
+                        flex: '1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: `${item.percent}%`,
+                          maxWidth: '100%',
+                          height: '10px',
+                          background: '#8D55E840',
+                          borderRadius: '5px'
+                        }} />
+                        <span style={{
+                          color: '#404040',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          minWidth: '45px',
+                          textAlign: 'left'
+                        }}>
+                          {item.percent}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* 펼쳐진 후 3번째 이후 항목들 */}
+                {expandedYearlyChart && yearlyChartData.slice(2).map((item, index) => (
+                  <div key={`expanded-${index}`} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <span style={{
+                        width: '120px',
+                        color: '#404040',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        textAlign: 'center'
+                      }}>
+                        {item.year}년({item.age}세)
+                      </span>
+                      <div style={{
+                        flex: '1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: `${item.percent}%`,
+                          maxWidth: '100%',
+                          height: '10px',
+                          background: '#8D55E840',
+                          borderRadius: '5px'
+                        }} />
+                        <span style={{
+                          color: '#404040',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          minWidth: '45px',
+                          textAlign: 'left'
+                        }}>
+                          {item.percent}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 펼쳐보기 전 화이트 오버레이 (3번째 줄 아래부터 가리기) */}
+            {!expandedYearlyChart && (
+              <div style={{
+                position: 'absolute',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                height: '70px',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 20%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,1) 80%)',
+                pointerEvents: 'none'
+              }} />
+            )}
+          </div>
+
+          {/* 펼쳐보기 버튼 */}
+          <div className={styles.expandWrap} style={{ marginTop: '0px' }}>
+            {!expandedYearlyChart && (
+              <button className={styles.outlineBtn} onClick={() => setExpandedYearlyChart(true)}>
+                펼쳐보기
+              </button>
+            )}
+          </div>
+
+          {/* 펼쳐진 상태에서만 구분선 표시 */}
+          {expandedYearlyChart && (
+            <>
+              <div className={styles.divider} />
+              <div className={styles.coupangBox}>
+                <div className={styles.coupangHead}>
+                  {getUserNameFromCookie()}님을 위한 행운의 상품
+                  <span className={styles.coupangHeadArrow}>›</span>
+                </div>
+                <div
+                  className={styles.coupangItem}
+                  onClick={() => window.open('https://example.com/coupang-product', '_blank')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className={styles.coupangThumb} />
+                  <div className={styles.coupangMeta}>
+                    <div className={styles.coupangTitle}>
+                      석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
+                    </div>
+                    <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </SectionCard>
 
@@ -350,23 +466,7 @@ export default function LoveResult() {
                 <div>
                   <div className={styles.moreTitle}>오늘의 운세</div>
                   <div className={styles.moreDesc}>
-                    오늘 하루 나의 행운은 어디서 올까?
-                  </div>
-                </div>
-              </div>
-              <div
-                className={styles.moreItem}
-                onClick={() => router.push("/yearly-result")}
-              >
-                <img
-                  src="/icon/icon_clover.png"
-                  alt="연간 운세"
-                  className={styles.moreIcon}
-                />
-                <div>
-                  <div className={styles.moreTitle}>연간 운세</div>
-                  <div className={styles.moreDesc}>
-                    올 한해 나의 행운은 어디서 올까?
+                    오늘 하루, 나를 비추는 행운은?
                   </div>
                 </div>
               </div>
@@ -383,6 +483,22 @@ export default function LoveResult() {
                   <div className={styles.moreTitle}>월간 운세</div>
                   <div className={styles.moreDesc}>
                     이번 달 나의 행운은 어디서 올까?
+                  </div>
+                </div>
+              </div>
+              <div
+                className={styles.moreItem}
+                onClick={() => router.push("/yearly-result")}
+              >
+                <img
+                  src="/icon/icon_clover.png"
+                  alt="연간 운세"
+                  className={styles.moreIcon}
+                />
+                <div>
+                  <div className={styles.moreTitle}>연간 운세</div>
+                  <div className={styles.moreDesc}>
+                    올 한 해 나의 행운 포인트는?
                   </div>
                 </div>
               </div>

@@ -185,7 +185,9 @@ export default function BirthInfoForm() {
 
         {/* 성별 */}
         <div className={styles.field}>
-          <label className={styles.label}>성별</label>
+          <label className={styles.label}>
+            성별 <span className={styles.required}>*</span>
+          </label>
           <div className={styles.segment} style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <button
               className={`${styles.segmentBtn} ${gender === 'M' ? styles.segmentActive : ''}`}

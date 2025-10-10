@@ -57,7 +57,7 @@ const TODAY_DATE_LABEL =
 const MOCK: ResultData = {
   dateLabel: TODAY_DATE_LABEL,
   score: 72,
-  tagline: "오늘 하루, 나를 비추는 행운은?\n운세 보고 포인트도 받아요!",
+  tagline: "오늘 하루, 나를 비추는 행운을 찾으셨나요?\n오늘 이벤트는 이미 참여했어요.",
   lucky: {
     numbers: "3, 35, 37",
     direction: "서북서",
@@ -798,7 +798,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
                 className={styles.failModalImage}
               />
               <p className={styles.failModalText}>
-                오늘 하루, 나를 비추는 행운은?<br />
+                오늘 하루, 나를 비추는 행운을 찾으셨나요?<br />
                 오늘 이벤트는 이미 참여했어요.
               </p>
             </div>

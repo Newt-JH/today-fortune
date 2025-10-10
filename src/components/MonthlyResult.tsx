@@ -155,11 +155,11 @@ export default function MonthlyResult() {
 
       <main className={styles.body}>
         {/* 상단 히어로 */}
-        <div className={styles.heroSection}>
-          <div className={styles.hero}>
-            <p className={styles.heroText}>
-              이번 달<br />
-              나의 행운 포인트는?
+        <div className={styles.heroSection} style={{ paddingBottom: '40px' }}>
+          <div className={styles.hero} style={{ gap: '0px', marginTop: '-40px' }}>
+            <p className={styles.heroText} style={{ marginBottom: '-5px' }}>
+              이번 달 나의 행운은<br />
+              어디서 올까?
             </p>
             <div className={styles.heroIcon}>
               <img
@@ -167,36 +167,19 @@ export default function MonthlyResult() {
                 alt="calendar icon"
                 width={120}
                 height={120}
-                className={styles.heroIconImg}
               />
             </div>
           </div>
         </div>
 
-        {/* 월간 운세 */}
+        {/* 이번 달 운세 */}
         <SectionCard>
-          <h2 className={styles.sectionTitle}>월간 운세</h2>
-
-          {/* 이번달/다음달 탭 */}
-          <div className={`${styles.tabRow} ${styles.tabRow2}`}>
-            <button
-              className={`${styles.tab} ${activeMonth === 'thisMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActiveMonth('thisMonth')}
-            >
-              이번 달 운세
-            </button>
-            <button
-              className={`${styles.tab} ${activeMonth === 'nextMonth' ? styles.tabActive : ''}`}
-              onClick={() => setActiveMonth('nextMonth')}
-            >
-              다음 달 운세
-            </button>
-          </div>
+          <h2 className={styles.sectionTitle}>이번 달 운세</h2>
 
           <ExpandableText
             text={activeMonthlyData.text}
             expanded={expandedMonthly}
-            onToggle={() => setExpandedMonthly(true)}
+            onToggle={() => setExpandedMonthly(v => !v)}
           />
 
           {expandedMonthly && (
@@ -212,128 +195,9 @@ export default function MonthlyResult() {
               >
                 <div className={styles.coupangThumb} />
                 <div className={styles.coupangMeta}>
+                  <span className={styles.coupangBadge}>쿠팡</span>
                   <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
-                  </div>
-                  <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        {/* 테마 운세 */}
-        <SectionCard>
-          <h2 className={styles.sectionTitle}>테마 운세</h2>
-
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activeTheme === 'love' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTheme('love')}
-            >
-              애정운
-            </button>
-            <button
-              className={`${styles.tab} ${activeTheme === 'health' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTheme('health')}
-            >
-              건강운
-            </button>
-            <button
-              className={`${styles.tab} ${activeTheme === 'wisdom' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTheme('wisdom')}
-            >
-              지혜운
-            </button>
-            <button
-              className={`${styles.tab} ${activeTheme === 'wish' ? styles.tabActive : ''}`}
-              onClick={() => setActiveTheme('wish')}
-            >
-              소원운
-            </button>
-          </div>
-
-          <ExpandableText
-            text={activeThemeData.text}
-            expanded={expandedTheme}
-            onToggle={() => setExpandedTheme(true)}
-          />
-
-          {expandedTheme && (
-            <div className={styles.coupangBox}>
-              <div className={styles.coupangHead}>
-                {getUserNameFromCookie()}님을 위한 행운의 상품
-                <span className={styles.coupangHeadArrow}>›</span>
-              </div>
-              <div
-                className={styles.coupangItem}
-                onClick={() => window.open('https://example.com/coupang-product', '_blank')}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className={styles.coupangThumb} />
-                <div className={styles.coupangMeta}>
-                  <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
-                  </div>
-                  <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </SectionCard>
-
-        {/* 주간 운세 */}
-        <SectionCard>
-          <h2 className={styles.sectionTitle}>주간 운세</h2>
-
-          <div className={`${styles.tabRow} ${styles.tabRow4}`}>
-            <button
-              className={`${styles.tab} ${activeWeek === 'week1' ? styles.tabActive : ''}`}
-              onClick={() => setActiveWeek('week1')}
-            >
-              1주차
-            </button>
-            <button
-              className={`${styles.tab} ${activeWeek === 'week2' ? styles.tabActive : ''}`}
-              onClick={() => setActiveWeek('week2')}
-            >
-              2주차
-            </button>
-            <button
-              className={`${styles.tab} ${activeWeek === 'week3' ? styles.tabActive : ''}`}
-              onClick={() => setActiveWeek('week3')}
-            >
-              3주차
-            </button>
-            <button
-              className={`${styles.tab} ${activeWeek === 'week4' ? styles.tabActive : ''}`}
-              onClick={() => setActiveWeek('week4')}
-            >
-              4주차
-            </button>
-          </div>
-
-          <ExpandableText
-            text={activeWeekData.text}
-            expanded={expandedWeek}
-            onToggle={() => setExpandedWeek(true)}
-          />
-
-          {expandedWeek && (
-            <div className={styles.coupangBox}>
-              <div className={styles.coupangHead}>
-                {getUserNameFromCookie()}님을 위한 행운의 상품
-                <span className={styles.coupangHeadArrow}>›</span>
-              </div>
-              <div
-                className={styles.coupangItem}
-                onClick={() => window.open('https://example.com/coupang-product', '_blank')}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className={styles.coupangThumb} />
-                <div className={styles.coupangMeta}>
-                  <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
+                    썸잇 점프 개구리 잡기 장난감 보드게임 세트, 그린, 1개
                   </div>
                   <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
                 </div>
@@ -359,7 +223,7 @@ export default function MonthlyResult() {
                 <div>
                   <div className={styles.moreTitle}>오늘의 운세</div>
                   <div className={styles.moreDesc}>
-                    오늘 하루 나의 행운은 어디서 올까?
+                    오늘 하루, 나를 비추는 행운은?
                   </div>
                 </div>
               </div>
@@ -375,7 +239,7 @@ export default function MonthlyResult() {
                 <div>
                   <div className={styles.moreTitle}>연간 운세</div>
                   <div className={styles.moreDesc}>
-                    올 한해 나의 행운은 어디서 올까?
+                    올 한 해 나의 행운 포인트는?
                   </div>
                 </div>
               </div>

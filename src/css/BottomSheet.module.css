@@ -30,20 +30,22 @@
   
   /* Handle */
   .handle{
-    width:44px; height:5px; background:#E5E7EB; border-radius:9999px;
+    width:80px; height:5px; background:#E5E7EB; border-radius:9999px;
     margin:8px auto 6px;
     touch-action:none; cursor:grab;
   }
   .handle:active{ cursor:grabbing; }
-  
+
   /* Header */
   .header{
-    padding:6px 16px 10px;
-    text-align:center;
+    padding:6px 16px 16px;
+    text-align:left;
     font-weight:700;
-    font-size:14px;
-    color: var(--brand-text);
+    font-size:16px;
+    color: #404040;
     border-bottom:1px solid #F3F4F6;
+    margin-left: 0;
+    margin-right: 0;
   }
   
   /* Body */
