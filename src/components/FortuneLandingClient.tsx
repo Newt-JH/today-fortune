@@ -196,7 +196,6 @@ export default function FortuneLandingClient({ type = 'daily' }: { type?: string
                 <div className={styles.fortuneAdImageContainer}>
                   <div className={styles.fortuneAdImage} />
                 </div>
-                <div className={styles.fortuneAdSize}>360 X 160</div>
               </div>
             </div>
 

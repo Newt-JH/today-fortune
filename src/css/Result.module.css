@@ -272,7 +272,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     border-bottom-right-radius: 12px;
   }
 .expandWrap { display:grid; place-items:center; margin-top:16px; padding:0 16px; }
-.outlineBtn { width:360px; height:48px; border-radius:13px; border:1px solid #AEAEAE; background:#fff; font-weight:500; font-size:16px; color:#404040; } /* 500 Medium 16px, 360px x 48px, #404040 색상 */
+.outlineBtn { width:100%; max-width:360px; height:48px; border-radius:13px; border:1px solid #AEAEAE; background:#fff; font-weight:500; font-size:16px; color:#404040; } /* 500 Medium 16px, max 360px x 48px, #404040 색상 */
 
 /* 구분선 */
 .divider {
