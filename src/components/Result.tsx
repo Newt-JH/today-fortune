@@ -228,7 +228,8 @@ function RadarBlock({
           <Radar
             name="오늘"
             dataKey="value"
-            stroke="#8B5CF6"
+            stroke="#7C3AED"
+            strokeWidth={2}
             fill="#8B5CF6"
             fillOpacity={0.3}
           />
@@ -273,13 +274,14 @@ const WeeklyBar = memo(function WeeklyBar({
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
-          margin={{ top: 20, right: 8, left: 8, bottom: 0 }}
+          margin={{ top: 20, right: 4, left: 4, bottom: 0 }}
+          barCategoryGap="22%"
         >
           <XAxis dataKey="label" tickLine={false} axisLine={false} />
           <YAxis hide domain={[0, 100]} />
           <Bar
             dataKey="value"
-            radius={[6, 6, 0, 0]}
+            radius={[6, 6, 6, 6]}
             isAnimationActive={false} // ← 여기서만 애니메이션 OFF
             animationDuration={0}
           >
@@ -640,8 +642,9 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               >
                 <div className={styles.coupangThumb} />
                 <div className={styles.coupangMeta}>
+                  <span className={styles.coupangBadge}>쿠팡</span>
                   <div className={styles.coupangTitle}>
-                    석양 정포 개구리 잡기 장난감 보드게임 세트, 그린, 1개
+                    썸잇 점프 개구리 잡기 장난감 보드게임 세트, 그린, 1개
                   </div>
                   <div className={styles.coupangSub}>배송 · 가격 표시 영역</div>
                 </div>

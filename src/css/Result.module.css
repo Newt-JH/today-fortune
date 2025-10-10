@@ -1,10 +1,10 @@
 /* 화면/공통 */
 .screen { min-height:100vh; background:#FAFAFB; color:#111827;
     font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif; }
-.header { position:sticky; top:0; z-index:9999; background:#fff; backdrop-filter:blur(8px); border-bottom:0; }
+.header { position:sticky; top:0; z-index:999; background:rgba(255,255,255,0.9); backdrop-filter:blur(8px); border-bottom:0; }
 .headerInner { max-width:420px; margin:0 auto; height:52px; display:flex; align-items:center; padding:0 16px; }
-.backBtn { background:transparent; border:none; outline:none; width:auto; height:auto; padding:0;font-size:24px; font-weight:700; line-height:1; color:#333; cursor:pointer; }
-.headerTitle { flex:1; text-align:center; font-weight:700; font-size:16px; }
+.backBtn { background:transparent; border:none; outline:none; width:24px; height:24px; padding:0; font-size:28px; line-height:1; color:#333; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.headerTitle { flex:1; text-align:center; font-weight:500; font-size:18px; line-height:130%; }
 .headerSpacer { width:20px; height:20px; }
 .body{
   max-width: 420px;
@@ -18,10 +18,9 @@
 
 /* 카드/섹션 — 풀블리드(양쪽 꽉 차게) */
 .card {
-background:#fff; border:1px solid #EDEEF0; border-radius:16px; padding:16px;
-box-shadow:0 6px 24px rgba(17,24,39,0.04);
+background:#fff; border-radius:24px; padding:16px;
 /* body 패딩(16px)을 무시하고 화면 가득 채우기 */
-margin:0 -16px 12px;
+margin:0 -16px 20px;
 }
 
 /* 히어로 카드 */
@@ -32,7 +31,7 @@ margin:0 -16px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0px;
+  gap: 16px;
   width: 360px;
   height: 190px;
   margin: 0 auto;
@@ -43,18 +42,18 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
 /* 점수 – 더 두껍게 */
 .heroScore { font-size:36px; font-weight:600; letter-spacing:-0.02em; }
 /* 아이콘+문구 중앙 정렬, 문구도 중앙 정렬 */
-.heroRow { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; }
+.heroRow { display:flex; align-items:center; justify-content:center; gap:20px; width:100%; margin-top:-30px; }
 .heroIcon {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  
+
   .heroIconImg {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     object-fit: cover;
   }
 .heroText {
@@ -64,18 +63,21 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
   color: #374151;
   text-align: center;
   white-space: pre-line;
-  margin-top: -10px; /* 이미지 쪽으로 당겨오기 */
+  display: flex;
+  align-items: center;
+  height: 120px;
 }
 /* 히어로 섹션 – 화면 가득 흰 배경 */
 .heroSection {
       background:#fff;
-      margin:0 -16px 12px;   /* 좌우 풀블리드 */
+      margin:0 -16px 20px;   /* 좌우 풀블리드 */
       padding:10px 16px 20px;  /* 상단 패딩 줄임 */
-      box-shadow:0 6px 24px rgba(17,24,39,0.04);
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
     }
 
 /* 공통 섹션 제목 */
-.sectionTitle { font-size:20px; font-weight:600; margin-bottom:12px; } /* 600 SemiBold 20px 맞음 */
+.sectionTitle { font-size:20px; font-weight:600; margin-bottom:16px; padding-left:8px; } /* 600 SemiBold 20px 맞음 */
 
 /* 오늘의 행운 – 2열 그리드 */
 .luckyGrid {
@@ -89,10 +91,7 @@ padding:6px 10px; border-radius:999px; font-size:12px; font-weight:500; }
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid #EDEEF0;
-    border-radius: 12px;
     padding: 12px;
-    background: #FCFCFD;
   }
   
   /* 아이콘 36×36 고정 */
@@ -154,7 +153,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     color: #ffffff;
     border: 1px solid #DDD6FE;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 800;
     z-index: 10;
@@ -213,7 +212,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
   }
 
 /* 상세 텍스트 */
-.detailText { margin-top:10px; font-size:14px; line-height:1.8; color:#404040; white-space:normal; padding:0 2px; font-weight: 400; } /* 400 Regular 14px #404040 */
+.detailText { margin-top:10px; font-size:14px; line-height:1.6; color:#404040; white-space:normal; padding:0 2px; font-weight: 400; } /* 400 Regular 14px #404040 */
 /* 상세 텍스트 래퍼: 페이드 오버레이를 얹기 위한 컨테이너 */
 .detailWrap {
     position: relative;
@@ -245,22 +244,23 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
 
 /* 구분선 */
 .divider {
-  width: 320px;
+  width: calc(100% - 4px);
   height: 0px;
   border-top: 1.5px solid #EDEDED;
-  margin: 16px auto;
+  margin: 16px auto 24px;
 }
 
 /* 쿠팡 배너 */
-.coupangBox { margin-top:14px; border:1px solid #EDEEF0; border-radius:14px; padding:10px; background:#FFFEFF; }
-.coupangHead { font-size:16px; font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.coupangBox { margin-top:14px; border:0; border-radius:14px; padding:10px; background:#FFFEFF; }
+.coupangHead { font-size:16px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:6px; }
 .coupangHeadArrow { font-size:22px; color:#9CA3AF; line-height:1; }
 .adBadge { font-size:10px; padding:2px 6px; background:#FFF1F2; color:#E11D48; border:1px solid #FFE4E6; border-radius:999px; }
-.coupangItem { display:flex; align-items:center; gap:10px; }
-.coupangThumb { width:56px; height:56px; border-radius:10px; background:linear-gradient(145deg,#F1F5F9,#E2E8F0); border:1px solid #EDEEF0; flex:0 0 auto; }
-.coupangMeta { display:grid; gap:3px; }
-.coupangTitle { font-size:13px; font-weight:700; line-height:1.4; }
-.coupangSub { font-size:12px; color:#6B7280; }
+.coupangItem { display:flex; align-items:center; gap:12px; }
+.coupangThumb { width:80px; height:80px; border-radius:10px; background:linear-gradient(145deg,#F1F5F9,#E2E8F0); border:1px solid #EDEEF0; flex:0 0 auto; }
+.coupangMeta { display:grid; gap:6px; flex:1; }
+.coupangBadge { display:inline-block; font-size:11px; padding:3px 7px; background:#e6f4ff; color:#0b5cab; border:1px solid #b3d9ff; border-radius:4px; font-weight:600; width:fit-content; }
+.coupangTitle { font-size:13px; font-weight:400; line-height:1.5; white-space:normal; word-wrap:break-word; word-break:break-all; }
+.coupangSub { font-size:12px; color:#6B7280; display:none; }
 .coupangGo { margin-left:auto; font-size:22px; color:#9CA3AF; }
 
 /* 주간 바 차트 */
@@ -269,14 +269,19 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
 /* 다른 운세 보러가기 */
 .moreList {
     display: grid;
-    gap: 20px;              /* 아이템 간격 */
+    gap: 0;
   }
-  
+
   .moreItem {
     display: flex;
     align-items: center;
     gap: 16px;              /* 아이콘 ↔ 텍스트 간격 */
-    padding: 8px 0;
+    padding: 20px 0px;
+    border-bottom: 1px solid #EDEDED;
+  }
+
+  .moreItem:last-child {
+    border-bottom: none;
   }
   
   .moreIcon {
@@ -347,7 +352,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -467,14 +472,14 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
     opacity: 0;
   }
   to {
-    transform: translateX(-50%) translateY(60px);
+    transform: translateX(-50%) translateY(110px);
     opacity: 1;
   }
 }
 
 @keyframes toastSlideUp {
   from {
-    transform: translateX(-50%) translateY(60px);
+    transform: translateX(-50%) translateY(110px);
     opacity: 1;
   }
   to {
@@ -519,7 +524,7 @@ border:1px solid #E9D5FF; padding:6px 10px; border-radius:999px; font-size:12px;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
