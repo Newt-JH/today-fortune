@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, memo, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import styles from "../css/Result.module.css";
 import {
   Radar,
@@ -379,7 +379,6 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
   const [active, setActive] = useState<CategoryKey>("총운");
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [showNoRewardModal, setShowNoRewardModal] = useState(false);
   const [pendingRewardStatus, setPendingRewardStatus] = useState<'success' | 'already' | null>(null);

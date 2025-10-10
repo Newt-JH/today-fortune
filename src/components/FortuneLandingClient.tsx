@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import styles from '@/css/ResultLanding.module.css';
 
 const CLOVERS = [
@@ -23,10 +23,8 @@ function getCookie(name: string): string | null {
   return null;
 }
 
-export default function FortuneLandingClient() {
+export default function FortuneLandingClient({ type = 'daily' }: { type?: string }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const type = searchParams.get('type') || 'daily'; // 기본값은 일간
 
   // 쿠키 없으면 알럿 후 /info로
   useEffect(() => {
