@@ -2,7 +2,7 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/newt/game/today-fortune"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/newt/game/aiwork"]
     },
     "brave-search": {
       "command": "npx",
@@ -10,7 +10,25 @@
       "env": {
         "BRAVE_API_KEY": ""
       }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright@latest"]
     }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/newt/game/today-fortune/.claude/auto-capture.sh"
+          }
+        ]
+      }
+    ]
   },
   "globalShortcut": "CommandOrControl+Shift+C",
   "theme": "dark"
