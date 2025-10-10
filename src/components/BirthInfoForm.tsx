@@ -88,13 +88,26 @@ export default function BirthInfoForm() {
           <label className={styles.label}>
             이름 <span className={styles.required}>*</span>
           </label>
-          <input
-            className={styles.input}
-            placeholder="이름을 입력해 주세요."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={30}
-          />
+          <div className={styles.inputWrapper}>
+            <input
+              className={styles.input}
+              placeholder="이름을 입력해 주세요."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={30}
+            />
+            {name && (
+              <button
+                className={styles.clearBtn}
+                onClick={() => setName('')}
+                aria-label="이름 지우기"
+              >
+                <svg viewBox="0 0 10 10" fill="none">
+                  <path d="M1 1L9 9M9 1L1 9" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* 양력/음력 */}
@@ -132,15 +145,28 @@ export default function BirthInfoForm() {
           <label className={styles.label}>
             생년월일 <span className={styles.required}>*</span>
           </label>
-          <input
-            className={styles.input}
-            placeholder="예시) 19880401"
-            inputMode="numeric"
-            pattern="\d*"
-            maxLength={8}
-            value={birth}
-            onChange={(e) => setBirth(e.target.value.replace(/\D/g, '').slice(0, 8))}
-          />
+          <div className={styles.inputWrapper}>
+            <input
+              className={styles.input}
+              placeholder="예시) 19880401"
+              inputMode="numeric"
+              pattern="\d*"
+              maxLength={8}
+              value={birth}
+              onChange={(e) => setBirth(e.target.value.replace(/\D/g, '').slice(0, 8))}
+            />
+            {birth && (
+              <button
+                className={styles.clearBtn}
+                onClick={() => setBirth('')}
+                aria-label="생년월일 지우기"
+              >
+                <svg viewBox="0 0 10 10" fill="none">
+                  <path d="M1 1L9 9M9 1L1 9" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* 출생 시간 (모달형 드롭다운 트리거) */}

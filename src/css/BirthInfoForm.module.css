@@ -19,34 +19,48 @@
     height: 48px;
     padding: 0 8px;
     background: rgba(255,255,255,0.9);
-    border-bottom: 1px solid var(--brand-ring);
+    border-bottom: 0;
     backdrop-filter: blur(6px);
   }
   .back {
-    width: 32px; height: 32px;
-    border: 0; background: transparent; font-size: 24px; color: var(--brand-text);
+    width: 24px;
+    height: 24px;
+    border: 0;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--brand-text);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .title {
     text-align: center;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 130%;
   }
   .right {}
   
   /* Main 컨테이너: 좌우 동일 패딩 -> 모든 컨트롤이 이 라인에 맞춰짐 */
   .main {
-    padding: 16px;            /* ← 오른쪽 끝 라인 기준 */
+    padding: 16px 16px 80px 16px;  /* 하단 여백 추가 (저장 버튼 공간) */
+    min-height: calc(100vh - 48px);  /* topbar 높이 제외 */
+    position: relative;
   }
   
   /* Field */
-  .field { margin-bottom: 16px; }
+  .field { margin-bottom: 28px; }
+  .field:first-child { margin-top: 28px; }
   .label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 130%;
     margin-bottom: 8px;
   }
-  .required { color: #d14a4a; margin-left: 2px; }
+  .required { color: #000; margin-left: 2px; }
   
   /* 공통 컨트롤 폭/박스모델(오른쪽 라인 맞춤의 핵심) */
   .input,
@@ -57,18 +71,51 @@
     box-sizing: border-box;   /* padding/border 포함 100%로 계산 */
   }
   
+  /* Input wrapper with clear button */
+  .inputWrapper {
+    position: relative;
+    width: 100%;
+  }
+
   /* Inputs */
   .input {
-    height: 44px;
+    height: 48px;
     border-radius: 5px;
-    border: 1px solid var(--brand-ring);
-    padding: 0 12px;
-    font-size: 14px;
+    border: 1px solid #AEAEAE;
+    padding: 0 40px 0 12px;  /* 오른쪽에 클리어 버튼 공간 */
+    font-size: 16px;
+    font-weight: 500;
     outline: none;
     background: #fff;
     -webkit-appearance: none; /* iOS 기본 스타일 제거 */
+    width: 100%;
+    box-sizing: border-box;
   }
-  .input::placeholder { color: var(--brand-muted); }
+  .input::placeholder { color: var(--brand-muted); font-weight: 500; }
+
+  /* Clear button */
+  .clearBtn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 0;
+    background: #D1D5DB;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .clearBtn svg {
+    width: 8.33px;
+    height: 8.33px;
+    stroke: #fff;
+    stroke-width: 2;
+  }
   
   /* Segment(토글 버튼 그룹) */
   .segment {
@@ -79,29 +126,30 @@
   .segmentBtn {
     height: 36px;
     border-radius: 13px;
-    border: 1px solid var(--brand-ring);
+    border: 1px solid #AEAEAE;
     background: #fff;
-    color: var(--brand-text);
-    font-size: 13px;
-    font-weight: 600;
+    color: #AEAEAE;
+    font-size: 16px;
+    font-weight: 500;
     padding: 0 14px;
     box-sizing: border-box;   /* 버튼도 라인 깨짐 방지 */
   }
   .segmentBtn[aria-pressed="true"],
   .segmentActive {
-    border-color: var(--brand-primary);
-    color: var(--brand-primary);
+    border-color: #8D55E8;
+    color: #8D55E8;
     background: #fff;
   }
   
   /* 모달 선택 트리거 버튼 (출생 시간) */
   .pickerBtn {
-    height: 44px;
+    height: 48px;
     border-radius: 5px;
-    border: 1px solid var(--brand-ring);
+    border: 1px solid #AEAEAE;
     background: #fff;
     padding: 0 12px;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
     color: var(--brand-text);
     display: flex;
     align-items: center;
@@ -124,15 +172,20 @@
   
   /* Save */
   .saveBtn {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    width: calc(100% - 32px);
     height: 48px;
     border: 0;
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
     font-size: 15px;
     font-weight: 700;
     color: #fff;
-    background: var(--brand-primary);
-    margin-top: 24px;
+    background: #8D55E8;
     cursor: pointer;
+    box-sizing: border-box;
   }
   .saveDisabled {
     background: #ECECEC;

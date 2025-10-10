@@ -95,31 +95,42 @@ export default function FortuneLandingClient() {
     return () => clearInterval(it);
   }, [showAd]);
 
+  const [adClicked, setAdClicked] = useState(false);
+
+  // 광고 클릭 후 포커스 복귀 시 결과 페이지 이동
+  useEffect(() => {
+    if (!adClicked) return;
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // 페이지로 돌아왔을 때 type에 따라 다른 결과 페이지로 이동
+        const resultRoutes = {
+          monthly: '/monthly-result',
+          yearly: '/yearly-result',
+          wealth: '/wealth-result',
+          love: '/love-result',
+          daily: '/result'
+        };
+        router.push(resultRoutes[type as keyof typeof resultRoutes] || '/result');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [adClicked, router, type]);
+
   // 포춘쿠키 광고 클릭 핸들러
   const handleFortuneAdClick = () => {
     window.open('https://example.com/fortune-ad', '_blank');
-    // type에 따라 다른 결과 페이지로 이동
-    const resultRoutes = {
-      monthly: '/monthly-result',
-      yearly: '/yearly-result',
-      wealth: '/wealth-result',
-      love: '/love-result',
-      daily: '/result'
-    };
-    router.push(resultRoutes[type as keyof typeof resultRoutes] || '/result');
+    setAdClicked(true);
   };
 
   // CTA 버튼 클릭 핸들러
   const handleCtaButtonClick = () => {
     window.open('https://example.com/fortune-ad', '_blank');
-    const resultRoutes = {
-      monthly: '/monthly-result',
-      yearly: '/yearly-result',
-      wealth: '/wealth-result',
-      love: '/love-result',
-      daily: '/result'
-    };
-    router.push(resultRoutes[type as keyof typeof resultRoutes] || '/result');
+    setAdClicked(true);
   };
 
   const cloverSrc = CLOVERS[frame];
@@ -213,7 +224,7 @@ export default function FortuneLandingClient() {
         )}
       </section>
 
-      {/* ④ 하단 CTA (+ X 버튼) */}
+      {/* ④ 하단 CTA */}
       {isComplete && !hideCta && (
         <div className={styles.ctaWrap}>
           <button
@@ -221,13 +232,6 @@ export default function FortuneLandingClient() {
             onClick={handleCtaButtonClick}
           >
             광고 보고 결과 보기
-          </button>
-          <button
-            className={styles.ctaClose}
-            aria-label="하단 버튼 닫기"
-            onClick={() => router.push('/info')}
-          >
-            ×
           </button>
         </div>
       )}

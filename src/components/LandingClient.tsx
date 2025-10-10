@@ -124,16 +124,34 @@ export default function LandingClient() {
 
   // CTA X 클릭 시 숨김
   const [hideCta, setHideCta] = useState(false);
+  const [adClicked, setAdClicked] = useState(false);
+
+  // 광고 클릭 후 포커스 복귀 시 결과 페이지 이동
+  useEffect(() => {
+    if (!adClicked) return;
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // 페이지로 돌아왔을 때
+        router.push('/result');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [adClicked, router]);
 
   // 수정 필요: 광고 클릭 핸들러 함수 (나중에 로직 변경 가능)
   const handleCoupangAdClick = () => {
     window.open('https://example.com/coupang-ad', '_blank');
-    router.push('/result');
+    setAdClicked(true);
   };
 
   const handleFortuneAdClick = () => {
     window.open('https://example.com/fortune-ad', '_blank');
-    router.push('/result');
+    setAdClicked(true);
   };
 
   // 수정 필요: CTA 버튼 클릭 핸들러 함수 (나중에 로직 변경 가능)
@@ -143,7 +161,7 @@ export default function LandingClient() {
       : 'https://example.com/fortune-ad'; // 포춘쿠키 광고 링크
 
     window.open(adLink, '_blank');
-    router.push('/result');
+    setAdClicked(true);
   };
 
   const cloverSrc = CLOVERS[frame];
@@ -265,7 +283,7 @@ export default function LandingClient() {
         )}
       </section>
 
-      {/* ④ 하단 CTA (+ X 버튼) */}
+      {/* ④ 하단 CTA */}
       {isComplete && !hideCta && (
         <div className={styles.ctaWrap}>
           <button
@@ -274,13 +292,15 @@ export default function LandingClient() {
           >
             {showCoupangAd ? '상품 보고 결과 보기' : '광고 보고 결과 보기'}
           </button>
-          <button
-            className={styles.ctaClose}
-            aria-label="하단 버튼 닫기"
-            onClick={() => router.push('/info')}
-          >
-            ×
-          </button>
+          {showCoupangAd && (
+            <button
+              className={styles.ctaClose}
+              aria-label="하단 버튼 닫기"
+              onClick={() => router.push('/info')}
+            >
+              ×
+            </button>
+          )}
         </div>
       )}
     </div>
