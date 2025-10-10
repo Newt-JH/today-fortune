@@ -1,14 +1,11 @@
+'use client';
+
 import FortuneLandingClient from '../../components/FortuneLandingClient';
 import { Suspense } from 'react';
-
-export const metadata = { title: '운세 분석 중' };
+import { useSearchParams } from 'next/navigation';
 
 function SearchParamsWrapper() {
-  if (typeof window === 'undefined') {
-    return <FortuneLandingClient type="daily" />;
-  }
-
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'daily';
 
   return <FortuneLandingClient type={type} />;
