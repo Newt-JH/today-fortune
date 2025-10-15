@@ -391,17 +391,20 @@ export default function Result({ data: initialData }: { data?: ResultData }) {
 
   // 페이지 진입 시 리워드 상태 확인 (모달은 바로 띄우지 않음)
   useEffect(() => {
-    // 광고에서 온 경우에만 리워드 로직 실행 (referrer로 판단하거나 쿠키로 판단)
-    // 여기서는 단순히 페이지 진입 시마다 체크
-    if (canReceiveReward()) {
-      setPendingRewardStatus('success'); // 받을 수 있는 경우
-      markTodayRewardReceived(); // 받음 처리
+    // 첫 진입인지 확인
+    const isFirstVisitToday = canReceiveReward();
+
+    if (isFirstVisitToday) {
+      // 첫 진입: 리워드 지급
+      setPendingRewardStatus('success');
+      markTodayRewardReceived();
     } else {
-      // 이미 받은 경우 - 오늘 모달을 본 적이 없을 때만 표시
+      // 두 번째+ 진입: 오늘 첫 번째 재방문인 경우에만 "이미 지급" 모달 표시
       if (!hasSeenNoRewardModalToday()) {
         setPendingRewardStatus('already');
-        markNoRewardModalSeen(); // 모달 봤다고 기록
+        markNoRewardModalSeen();
       }
+      // 이미 모달을 본 경우: 아무것도 표시하지 않음 (pendingRewardStatus는 null 유지)
     }
   }, []);
 
