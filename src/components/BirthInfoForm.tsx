@@ -1,10 +1,11 @@
 // src/components/BirthInfoForm.tsx
 'use client';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '@/css/BirthInfoForm.module.css';
 import BottomSheet, { BottomSheetHandle } from '@/components/BottomSheet';
 import TimePickerSheet, { getTimeLabel } from '@/components/TimePickerSheet';
+import { addQueryParams } from '@/utils/navigation';
 
 type CalendarType = 'SOLAR' | 'LUNAR_PLAIN' | 'LUNAR_LEAP';
 type Gender = 'M' | 'F';
@@ -40,6 +41,27 @@ export default function BirthInfoForm() {
   const [openTimeSheet, setOpenTimeSheet] = useState(false);
   const sheetRef = useRef<BottomSheetHandle>(null);
 
+  // 페이지 진입 시 쿠키 체크 - 유저 데이터가 있으면 landing으로 이동
+  useEffect(() => {
+    const checkCookie = () => {
+      try {
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+          const [name, value] = cookie.trim().split('=');
+          if (name === 'fortuneInfo') {
+            // 쿠키가 존재하면 landing으로 리다이렉트 (파라미터 유지)
+            router.push(addQueryParams('/landing'));
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('쿠키 체크 오류:', error);
+      }
+    };
+
+    checkCookie();
+  }, [router]);
+
   // 필수값 충족 시 활성화: 이름 + 생년월일(YYYYMMDD & 실제 존재 날짜)
   const canSubmit = useMemo(
     () => name.trim().length > 0 && isValidYmd(birth),
@@ -64,7 +86,7 @@ export default function BirthInfoForm() {
     document.cookie =
       `fortuneInfo=${json}; Path=/; Max-Age=31536000; SameSite=Lax`;
 
-    router.push('/landing');
+    router.push(addQueryParams('/landing'));
   };
 
   return (

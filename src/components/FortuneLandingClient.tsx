@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '@/css/ResultLanding.module.css';
+import { addQueryParams } from '@/utils/navigation';
 
 const CLOVERS = [
   '/fortune/clover1.png',
@@ -101,7 +102,7 @@ export default function FortuneLandingClient({ type = 'daily' }: { type?: string
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // 페이지로 돌아왔을 때 type에 따라 다른 결과 페이지로 이동
+        // 페이지로 돌아왔을 때 type에 따라 다른 결과 페이지로 이동 (파라미터 유지)
         const resultRoutes = {
           monthly: '/monthly-result',
           yearly: '/yearly-result',
@@ -109,7 +110,8 @@ export default function FortuneLandingClient({ type = 'daily' }: { type?: string
           love: '/love-result',
           daily: '/result'
         };
-        router.push(resultRoutes[type as keyof typeof resultRoutes] || '/result');
+        const route = resultRoutes[type as keyof typeof resultRoutes] || '/result';
+        router.push(addQueryParams(route));
       }
     };
 

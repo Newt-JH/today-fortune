@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '@/css/ResultLanding.module.css';
+import { addQueryParams } from '@/utils/navigation';
 
 const CLOVERS = [
   '/fortune/clover1.png',
@@ -132,8 +133,8 @@ export default function LandingClient() {
 
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        // 페이지로 돌아왔을 때
-        router.push('/result');
+        // 페이지로 돌아왔을 때 (파라미터 유지)
+        router.push(addQueryParams('/result'));
       }
     };
 
@@ -242,7 +243,7 @@ export default function LandingClient() {
                   <button
                     className={styles.adClose}
                     aria-label="광고 닫기"
-                    onClick={() => router.push('/info')}
+                    onClick={() => router.push(addQueryParams('/info'))}
                   >
                     ×
                   </button>
@@ -296,7 +297,7 @@ export default function LandingClient() {
             <button
               className={styles.ctaClose}
               aria-label="하단 버튼 닫기"
-              onClick={() => router.push('/info')}
+              onClick={() => router.push(addQueryParams('/info'))}
             >
               ×
             </button>

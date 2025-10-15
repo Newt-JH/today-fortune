@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "../css/Result.module.css";
+import { addQueryParams } from "@/utils/navigation";
 
 // 쿠키에서 사용자 이름 가져오기
 function getUserNameFromCookie(): string {
@@ -88,6 +89,12 @@ export default function YearlyResult() {
   const [expandedTheme, setExpandedTheme] = useState(false);
   const [activeMonth, setActiveMonth] = useState<'jul' | 'aug' | 'sep' | 'oct' | 'nov' | 'dec'>('jul');
   const [expandedMonth, setExpandedMonth] = useState(false);
+
+  // 사주정보 변경하기 클릭 핸들러 - 쿠키 삭제 후 info로 이동
+  const handleChangeBirthInfo = () => {
+    document.cookie = 'fortuneInfo=; Path=/; Max-Age=0';
+    router.push(addQueryParams('/info'));
+  };
 
   // 연간 운세 데이터
   const yearlyData = {
@@ -377,7 +384,7 @@ export default function YearlyResult() {
             <div className={styles.moreList}>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/result")}
+                onClick={() => router.push(addQueryParams("/result"))}
               >
                 <img
                   src="/icon/icon_sun.png"
@@ -393,7 +400,7 @@ export default function YearlyResult() {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/monthly-result")}
+                onClick={() => router.push(addQueryParams("/monthly-result"))}
               >
                 <img
                   src="/icon/icon_calendar.png"
@@ -409,7 +416,7 @@ export default function YearlyResult() {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/wealth-result")}
+                onClick={() => router.push(addQueryParams("/wealth-result"))}
               >
                 <img
                   src="/icon/icon_coin.png"
@@ -425,7 +432,7 @@ export default function YearlyResult() {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/love-result")}
+                onClick={() => router.push(addQueryParams("/love-result"))}
               >
                 <img
                   src="/icon/icon_heart.png"
@@ -446,7 +453,7 @@ export default function YearlyResult() {
         {/* CTA (이미지 버튼) */}
         <section className={styles.card}>
           <div className={styles.ctaCenter}>
-            <button className={styles.ctaBtn} onClick={() => router.push('/info')}>
+            <button className={styles.ctaBtn} onClick={handleChangeBirthInfo}>
               <img
                 src="/changeButton.png"
                 alt="사주정보 변경하기"

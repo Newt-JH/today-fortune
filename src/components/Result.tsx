@@ -19,6 +19,7 @@ import {
   Cell,
   LabelList,
 } from "recharts";
+import { addQueryParams } from "@/utils/navigation";
 
 // ===== 타입 =====
 export type CategoryKey =
@@ -392,6 +393,14 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
     window.open('https://example.com/coupang-product', '_blank');
   };
 
+  // 사주정보 변경하기 클릭 핸들러 - 쿠키 삭제 후 info로 이동
+  const handleChangeBirthInfo = () => {
+    // fortuneInfo 쿠키 삭제
+    document.cookie = 'fortuneInfo=; Path=/; Max-Age=0';
+    // info 페이지로 이동 (파라미터 유지)
+    router.push(addQueryParams('/info'));
+  };
+
   // 쿠키에서 리워드 수령 가능 여부 확인 (오늘 받을 수 있는지)
   const canReceiveReward = (): boolean => {
     if (typeof document === 'undefined') return false;
@@ -421,6 +430,35 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
     document.cookie = `dailyReward=${today}; expires=${tomorrow.toUTCString()}; path=/`;
   };
 
+  // 오늘 이미 "이미 지급" 모달을 본 적이 있는지 확인
+  const hasSeenNoRewardModalToday = (): boolean => {
+    if (typeof document === 'undefined') return false;
+
+    const today = new Date().toISOString().split('T')[0];
+    const cookies = document.cookie.split(';');
+
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'seenNoRewardModal') {
+        return value === today; // 오늘 날짜와 같으면 이미 봄
+      }
+    }
+    return false; // 쿠키가 없으면 아직 안 봄
+  };
+
+  // "이미 지급" 모달을 봤다고 쿠키에 기록
+  const markNoRewardModalSeen = () => {
+    if (typeof document === 'undefined') return;
+
+    const today = new Date().toISOString().split('T')[0];
+    // 내일 자정에 만료되도록 설정
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    document.cookie = `seenNoRewardModal=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+  };
+
   // 페이지 진입 시 리워드 상태 확인 (모달은 바로 띄우지 않음)
   useEffect(() => {
     // 광고에서 온 경우에만 리워드 로직 실행 (referrer로 판단하거나 쿠키로 판단)
@@ -429,7 +467,11 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
       setPendingRewardStatus('success'); // 받을 수 있는 경우
       markTodayRewardReceived(); // 받음 처리
     } else {
-      setPendingRewardStatus('already'); // 이미 받은 경우
+      // 이미 받은 경우 - 오늘 모달을 본 적이 없을 때만 표시
+      if (!hasSeenNoRewardModalToday()) {
+        setPendingRewardStatus('already');
+        markNoRewardModalSeen(); // 모달 봤다고 기록
+      }
     }
   }, []);
 
@@ -671,7 +713,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
             <div className={styles.moreList}>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/fortune-landing?type=monthly")}
+                onClick={() => router.push(addQueryParams("/fortune-landing?type=monthly"))}
               >
                 <img
                   src="/icon/icon_calendar.png"
@@ -687,7 +729,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/fortune-landing?type=yearly")}
+                onClick={() => router.push(addQueryParams("/fortune-landing?type=yearly"))}
               >
                 <img
                   src="/icon/icon_clover.png"
@@ -703,7 +745,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/fortune-landing?type=wealth")}
+                onClick={() => router.push(addQueryParams("/fortune-landing?type=wealth"))}
               >
                 <img
                   src="/icon/icon_coin.png"
@@ -719,7 +761,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
               </div>
               <div
                 className={styles.moreItem}
-                onClick={() => router.push("/fortune-landing?type=love")}
+                onClick={() => router.push(addQueryParams("/fortune-landing?type=love"))}
               >
                 <img
                   src="/icon/icon_heart.png"
@@ -740,7 +782,7 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
         {/* CTA (이미지 버튼) */}
         <section className={styles.card}>
             <div className={styles.ctaCenter}>
-                <button className={styles.ctaBtn}  onClick={() => router.push('/info')}>
+                <button className={styles.ctaBtn}  onClick={handleChangeBirthInfo}>
                     <img
                         src="/changeButton.png"
                         alt="사주정보 변경하기"
