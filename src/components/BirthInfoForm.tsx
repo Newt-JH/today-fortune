@@ -40,6 +40,13 @@ export default function BirthInfoForm() {
 
   const [openTimeSheet, setOpenTimeSheet] = useState(false);
   const sheetRef = useRef<BottomSheetHandle>(null);
+  const [isCheckingCookie, setIsCheckingCookie] = useState(true);
+
+  // 필수값 충족 시 활성화: 이름 + 생년월일(YYYYMMDD & 실제 존재 날짜)
+  const canSubmit = useMemo(
+    () => name.trim().length > 0 && isValidYmd(birth),
+    [name, birth]
+  );
 
   // 페이지 진입 시 쿠키 체크 - 유저 데이터가 있으면 landing으로 이동
   useEffect(() => {
@@ -56,17 +63,18 @@ export default function BirthInfoForm() {
         }
       } catch (error) {
         console.error('쿠키 체크 오류:', error);
+      } finally {
+        setIsCheckingCookie(false);
       }
     };
 
     checkCookie();
   }, [router]);
 
-  // 필수값 충족 시 활성화: 이름 + 생년월일(YYYYMMDD & 실제 존재 날짜)
-  const canSubmit = useMemo(
-    () => name.trim().length > 0 && isValidYmd(birth),
-    [name, birth]
-  );
+  // 쿠키 체크 중에는 하얀 화면 표시
+  if (isCheckingCookie) {
+    return <div style={{ width: '100vw', height: '100vh', backgroundColor: '#fff' }} />;
+  }
 
   const onSave = () => {
     if (!canSubmit) return;

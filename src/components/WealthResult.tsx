@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "../css/Result.module.css";
 import { addQueryParams } from "@/utils/navigation";
+import { getFortuneInfo } from "@/utils/cookie";
 
 // 쿠키에서 사용자 이름 가져오기
 function getUserNameFromCookie(): string {
@@ -88,6 +90,7 @@ export default function WealthResult() {
   const [activeManagement, setActiveManagement] = useState<'gain' | 'loss'>('gain');
   const [expandedManagement, setExpandedManagement] = useState(false);
   const [expandedInvest, setExpandedInvest] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 사주정보 변경하기 클릭 핸들러 - 쿠키 삭제 후 info로 이동
   const handleChangeBirthInfo = () => {
@@ -95,31 +98,56 @@ export default function WealthResult() {
     router.push(addQueryParams('/info'));
   };
 
-  // 타고난 재물운
-  const bornWealthData = {
-    score: 72,
-    text: "타고난 재물운을 기반으로 사주 차원의 기운을 봤을 때 꾸준한 수입이 가능하며, 특히 노력에 비례해서 성과가 따라오는 운을 타고났습니다. 기본적으로 기저에 깔린 사주의 흐름이 재물을 꺼려하지 않는 편이므로 금전적인 기회들이 찾아올 때 막히지 않을 것이니, 그 순간의 행운이 찾아온다 다다를 수 있을 거예요. 젊었을때는 저축력이 떨어질 수 있지만 나이가 들수록 금전에 대한 감각이 발달하는 성향이 있어서 재무관리 능력이 향상될 것입니다. 특히 협력과 파트너십을 통한 재물운이 좋아 함께 일하거나 투자할 때 더 큰 성과를 거둘 수 있습니다. 다만 지나친 욕심은 오히려 독이 될 수 있으니 적절한 선에서 만족하고 감사하는 마음을 갖는 것이 중요합니다."
-  };
+  // 데이터 상태 (API에서 받아옴)
+  const [bornWealthData, setBornWealthData] = useState<any>(null);
+  const [currentWealthData, setCurrentWealthData] = useState<any>(null);
+  const [managementData, setManagementData] = useState<any>(null);
+  const [investData, setInvestData] = useState<any>(null);
 
-  // 현재 재물운
-  const currentWealthData = {
-    text: "이 운에는 첫은 손에 쥔 재물의 기운을 아직까지 못 받고 있다면 약속되어 있는 시간이 막힐 수 있지만 시간이 지나갈수록 처레에 따라 수입이 안정화될 것입니다. 지혜롭게 자신의 시야를 바라보며 어딘가를 청하지마라 대체로 종견에 이러한 방향으로 해야하되 실적적인 사이의 허실에 바라지는 않기를 것을 묻더라도 아니더니 막힌 기를 받힐 좋게 이어지지 않음을 인건 자사의 것을 지을러고 볼러가는 비용은 몫을 다나지 마십시오. 투자를 고려하고 있다면 충분한 조사와 분석을 통해 결정하되, 전문가의 조언을 구하는 것도 좋겠습니다. 부동산이나 주식 등 자산 투자에 대한 기회가 찾아올 수 있으니 신중하게 검토해보시기 바랍니다."
-  };
+  // API에서 데이터 가져오기
+  useEffect(() => {
+    const fetchFortuneData = async () => {
+      try {
+        const fortuneInfo = getFortuneInfo();
+        if (!fortuneInfo) {
+          console.error('사주 정보가 없습니다.');
+          setIsLoading(false);
+          return;
+        }
 
-  // 재물 관리
-  const managementData = {
-    gain: {
-      text: "재물을 모으는 방법은 계획적인 관리와 꾸준한 실천이 핵심입니다. 기존의 저축 습관을 더욱 체계화하고 목표 금액을 설정해서 달성해 나가시기 바랍니다. 정기적금이나 적금 상품을 알아보고 자신에게 맞는 상품을 선택하는 것도 좋겠습니다. 가계부 작성을 통해 불필요한 지출을 줄이고 저축할 수 있는 여력을 늘려보세요. 자동이체를 활용해서 저축을 우선순위에 두는 시스템을 만드는 것이 효과적입니다. 비상금도 별도로 마련해두시고, 단기 목표와 장기 목표를 나누어 저축 계획을 세우시면 더욱 좋은 결과를 얻을 수 있을 것입니다. 수입이 생길 때마다 일정 비율을 먼저 저축하는 습관을 들이는 것이 재물을 모으는 가장 확실한 방법입니다."
-    },
-    loss: {
-      text: "재물 손실을 막기 위해서는 신중한 판단과 계획적인 소비가 필요합니다. 큰 금액의 지출을 고려하고 있다면 충분한 검토와 비교를 통해 결정하시기 바랍니다. 충동적인 구매나 감정적인 소비는 가장 큰 재물 손실의 원인이 되므로 반드시 피해야 합니다. 투자나 대출을 할 때는 본인의 재정 상태를 정확히 파악하고 감당할 수 있는 범위 내에서 결정하세요. 사기나 피싱 등 금융 범죄에 주의하고, 너무 좋은 조건의 투자 제안은 의심해보는 것이 좋습니다. 정기적인 고정비를 점검하고 불필요한 구독이나 서비스는 정리하는 것도 중요합니다. 보험이나 비상금을 통해 예상치 못한 손실에 대비하는 것도 재물을 지키는 현명한 방법입니다."
-    }
-  };
+        const response = await fetch('/api/fortune/wealth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fortuneInfo),
+        });
 
-  // 재테크 재물운
-  const investData = {
-    text: "재테크 재물운은 다양한 방법으로 자산을 불릴 수 있는 좋은 흐름을 보이고 있습니다. 주식이나 펀드 등 금융 투자에서 안정적인 수익을 기대할 수 있으며, 부동산 투자를 고려한다면 좋은 물건을 찾을 수 있는 시기입니다. 다만 높은 수익률만을 쫓지 말고 위험도와 안정성을 함께 고려해서 분산 투자하는 것이 현명합니다. 새로운 투자 상품이나 기회가 찾아올 수 있으니 충분히 공부하고 조사한 후 결정하세요. 장기적인 관점에서 꾸준히 투자하는 것이 단기 수익보다 더 큰 성과를 가져다줄 것입니다. 전문가의 조언을 구하거나 재테크 스터디에 참여하는 것도 도움이 될 것입니다."
-  };
+        if (!response.ok) {
+          throw new Error('Failed to fetch wealth fortune data');
+        }
+
+        const result = await response.json();
+        if (result.success && result.data) {
+          setBornWealthData(result.data.bornWealthData);
+          setCurrentWealthData(result.data.currentWealthData);
+          setManagementData(result.data.managementData);
+          setInvestData(result.data.investData);
+        }
+      } catch (error) {
+        console.error('재물운 데이터 로딩 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFortuneData();
+  }, []);
+
+  // 로딩 중이거나 데이터가 없을 때 하얀 화면 표시
+  if (isLoading || !bornWealthData || !currentWealthData || !managementData || !investData) {
+    return <div style={{ width: '100vw', height: '100vh', backgroundColor: '#fff' }} />;
+  }
 
   const activeManagementData = managementData[activeManagement];
 

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import styles from "../css/Result.module.css";
 import { addQueryParams } from "@/utils/navigation";
+import { getFortuneInfo } from "@/utils/cookie";
 
 // 쿠키에서 사용자 이름 가져오기
 function getUserNameFromCookie(): string {
@@ -87,6 +89,7 @@ export default function LoveResult() {
   const [expandedYearlyLove, setExpandedYearlyLove] = useState(false);
   const [expandedTodayLove, setExpandedTodayLove] = useState(false);
   const [expandedYearlyChart, setExpandedYearlyChart] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 사주정보 변경하기 클릭 핸들러 - 쿠키 삭제 후 info로 이동
   const handleChangeBirthInfo = () => {
@@ -94,37 +97,56 @@ export default function LoveResult() {
     router.push(addQueryParams('/info'));
   };
 
-  // 타고난 애정운 데이터
-  const bornLoveData = {
-    score: 70,
-    text: "타고난 (★☆★) 남성의 애정운을 예상하면, 매력과 관계 맺기에 강한 기운을 가지고 있습니다. 자신이 좋아하는 사람에게는 적극적으로 다가가고 자신의 호의를 잘 전달합니다. 이들은 사랑에 빠지면 깊이 몰입하며 상대방에게 헌신적인 모습을 보입니다. 또한, 이들은 대화를 즐기고 상대방의 말을 잘 들어주어, 관계에서 긍정적인 분위기를 만듭니다."
-  };
+  // 데이터 상태 (API에서 받아옴)
+  const [bornLoveData, setBornLoveData] = useState<any>(null);
+  const [yearlyLoveData, setYearlyLoveData] = useState<any>(null);
+  const [todayLoveData, setTodayLoveData] = useState<any>(null);
+  const [yearlyChartData, setYearlyChartData] = useState<any>(null);
 
-  // 올해의 애정운 데이터
-  const yearlyLoveData = {
-    score: 70,
-    text: "부일일 (★☆★) 남성의 애정운을 예상하면, 매력과 관계 맺기에 강한 기운을 가지고 있습니다. 자신이 좋아하는 사람에게는 적극적으로 다가가고 자신의 호의를 잘 전달합니다. 이들은 사랑에 빠지면 깊이 몰입하며 상대방에게 헌신적인 모습을 보입니다. 또한, 이들은 대화를 즐기고 상대방의 말을 잘 들어주어, 관계에서 긍정적인 분위기를 만듭니다."
-  };
+  // API에서 데이터 가져오기
+  useEffect(() => {
+    const fetchFortuneData = async () => {
+      try {
+        const fortuneInfo = getFortuneInfo();
+        if (!fortuneInfo) {
+          console.error('사주 정보가 없습니다.');
+          setIsLoading(false);
+          return;
+        }
 
-  // 오늘의 애정운 데이터
-  const todayLoveData = {
-    score: 82,
-    text: "한밤 예정운을 오늘에 발고나봐 단순한 말 잘 듣기는 더욱 심화되며 기능에선 일부러 막습니다. 상대방이 기쁨과 슬픔을 공유할 수 있는 이해심도 높고, 배려 있는 태도를 보이기 때문에 관계가 오래 지속되는 경향이 강합니다. 사랑하는 사람과 갈등이 있을 때도 감정적으로 치우치기보다는 조리 있게 해결하려는 자세가 돋보입니다."
-  };
+        const response = await fetch('/api/fortune/love', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fortuneInfo),
+        });
 
-  // 연도별 호감/연애 확률 데이터
-  const yearlyChartData = [
-    { year: 2002, age: 19, percent: 34 },
-    { year: 2003, age: 20, percent: 49 },
-    { year: 2007, age: 24, percent: 39 },
-    { year: 2008, age: 25, percent: 39 },
-    { year: 2012, age: 29, percent: 44 },
-    { year: 2013, age: 30, percent: 49 },
-    { year: 2019, age: 36, percent: 39 },
-    { year: 2020, age: 37, percent: 46 },
-    { year: 2022, age: 39, percent: 34 },
-    { year: 2023, age: 40, percent: 49 }
-  ];
+        if (!response.ok) {
+          throw new Error('Failed to fetch love fortune data');
+        }
+
+        const result = await response.json();
+        if (result.success && result.data) {
+          setBornLoveData(result.data.bornLoveData);
+          setYearlyLoveData(result.data.yearlyLoveData);
+          setTodayLoveData(result.data.todayLoveData);
+          setYearlyChartData(result.data.yearlyChartData);
+        }
+      } catch (error) {
+        console.error('애정운 데이터 로딩 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFortuneData();
+  }, []);
+
+  // 로딩 중이거나 데이터가 없을 때 하얀 화면 표시
+  if (isLoading || !bornLoveData || !yearlyLoveData || !todayLoveData || !yearlyChartData) {
+    return <div style={{ width: '100vw', height: '100vh', backgroundColor: '#fff' }} />;
+  }
 
   return (
     <div className={styles.screen}>
@@ -285,7 +307,7 @@ export default function LoveResult() {
 
               {/* 펼쳐보기 전에는 처음 2개만 명확하게 표시 */}
               <div style={{ position: 'relative' }}>
-                {yearlyChartData.slice(0, 2).map((item, index) => (
+                {yearlyChartData.slice(0, 2).map((item: any, index: number) => (
                   <div key={index} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <span style={{
@@ -325,7 +347,7 @@ export default function LoveResult() {
                 ))}
 
                 {/* 펼쳐보기 전에만 보이는 항목 - 3번째만 명확하게 */}
-                {!expandedYearlyChart && yearlyChartData.slice(2, 3).map((item, index) => (
+                {!expandedYearlyChart && yearlyChartData.slice(2, 3).map((item: any, index: number) => (
                   <div key={`third-${index}`} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <span style={{
@@ -365,7 +387,7 @@ export default function LoveResult() {
                 ))}
 
                 {/* 펼쳐진 후 3번째 이후 항목들 */}
-                {expandedYearlyChart && yearlyChartData.slice(2).map((item, index) => (
+                {expandedYearlyChart && yearlyChartData.slice(2).map((item: any, index: number) => (
                   <div key={`expanded-${index}`} style={{ marginBottom: '18px', paddingLeft: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <span style={{

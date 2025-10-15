@@ -20,6 +20,7 @@ import {
   LabelList,
 } from "recharts";
 import { addQueryParams } from "@/utils/navigation";
+import { getFortuneInfo } from "@/utils/cookie";
 
 // ===== 타입 =====
 export type CategoryKey =
@@ -44,118 +45,6 @@ export type ResultData = {
   radar: { name: CategoryKey | "총운"; value: number }[];
   categories: Record<CategoryKey, { score: number; text: string }>;
   weekly: { label: string; value: number }[];
-};
-
-// ✅ MOCK 위 어딘가에 추가
-const TODAY_DATE_LABEL =
-  new Intl.DateTimeFormat("ko-KR", {
-    month: "long",
-    day: "numeric",
-    timeZone: "Asia/Seoul",
-  }).format(new Date());
-
-// ===== 목업 데이터 (서버 연동 전) =====
-const MOCK: ResultData = {
-  dateLabel: TODAY_DATE_LABEL,
-  score: 72,
-  tagline: "오늘 하루, 나를 비추는 행운을 찾으셨나요?\n오늘 이벤트는 이미 참여했어요.",
-  lucky: {
-    numbers: "3, 35, 37",
-    direction: "서북서",
-    gem: "오팔",
-    color: "베이비핑크",
-    place: "카페",
-    flower: "벚꽃",
-  },
-  radar: [
-    { name: "총운", value: 72 },
-    { name: "재물운", value: 76 },
-    { name: "애정운", value: 70 },
-    { name: "소망운", value: 65 },
-    { name: "직장운", value: 68 },
-    { name: "방위운", value: 72 },
-  ],
-  categories: {
-    총운: {
-      score: 72,
-      text:
-        "고목붕춘이라 봄이 돌아와 고목에 새싹이 트는 격으로 옛 것을 버리고 새롭게 전진하며 승승장구할 길운입니다. " +
-        "지금껏 막혀 있던 일이 한 번에 풀리며 기대 이상의 결과를 얻게 될 가능성이 큽니다. " +
-        "작은 선택 하나가 향후 큰 변화를 가져올 수 있으니, 매 순간 신중하게 임하는 태도가 중요합니다. " +
-        "사소한 실수는 쉽게 회복되니 두려워하지 말고 적극적으로 도전해보세요. " +
-        "당장의 성과보다 방향성에 집중하면 장기적인 성취를 이룰 수 있습니다. " +
-        "귀인의 도움을 받을 수 있으니 주변의 제안이나 조언을 귀담아들으세요. " +
-        "오늘 하루는 긍정적인 기운이 강하게 작용하므로 자신감을 가지고 움직이면 좋습니다.",
-    },
-    재물운: {
-      score: 84,
-      text:
-        "좋은 기회와 주의가 함께 따르는 시기입니다. " +
-        "갑작스러운 지출이 발생할 수 있지만, 계획만 잘 세운다면 충분히 감당할 수 있습니다. " +
-        "투자나 재테크에서는 단기보다는 장기적인 안목을 가져야 손해를 줄일 수 있습니다. " +
-        "작은 절약이 모여 큰 재산이 되니 소비 습관을 점검하기 좋은 날입니다. " +
-        "불필요한 지출을 줄이고 꼭 필요한 곳에만 자원을 쓰면 큰 보상이 따릅니다. " +
-        "금전적으로 안정된 흐름이 유지되므로 지나친 걱정보다는 체계적인 관리가 필요합니다. " +
-        "적절한 시기에 귀인의 도움이나 뜻밖의 보너스가 생길 가능성도 있습니다. " +
-        "재물을 잃을까 두려워하기보다는 현명하게 지켜내는 지혜가 필요합니다.",
-    },
-    애정운: {
-      score: 92,
-      text:
-        "오늘 가장 밝은 기운을 머금고 있습니다. " +
-        "솔직한 대화와 따뜻한 배려가 상대방의 마음을 크게 열게 될 것입니다. " +
-        "기존의 연인에게는 서로에 대한 이해가 깊어져 관계가 더욱 단단해집니다. " +
-        "솔로라면 새로운 만남의 기회가 열리며, 첫인상에서 좋은 호감을 얻을 수 있습니다. " +
-        "작은 선물이나 사소한 말 한마디가 큰 감동을 줄 수 있는 날입니다. " +
-        "약속이나 데이트를 계획하기에 최적의 시기이며 즐거운 분위기가 이어집니다. " +
-        "주변에서 당신의 매력이 빛나게 보이는 만큼 자신감을 갖고 다가가 보세요. " +
-        "오늘은 사랑과 호감이 넘쳐흐르는 하루가 될 것입니다.",
-    },
-    소망운: {
-      score: 68,
-      text:
-        "차근차근 목표를 다져가는 흐름입니다. " +
-        "당장은 큰 진전이 없더라도 꾸준히 나아가면 결국 원하는 바를 이룰 수 있습니다. " +
-        "작은 성취가 모여 큰 결실로 이어질 가능성이 큽니다. " +
-        "실현 가능성이 낮아 보이는 소망도 오늘은 구체적인 계획을 세우면 현실화될 기운이 있습니다. " +
-        "자신이 원하는 방향을 명확히 하고 구체적인 행동으로 옮기는 것이 중요합니다. " +
-        "낙관적인 마음을 유지하면 예상치 못한 도움을 받을 수 있습니다. " +
-        "조급함을 버리고 매일의 노력을 쌓아가면 좋은 결과가 따를 것입니다.",
-    },
-    직장운: {
-      score: 73,
-      text:
-        "성실한 노력이 빛을 발하는 시기입니다. " +
-        "업무에서 작은 성과가 쌓여 상사나 동료에게 인정받을 수 있습니다. " +
-        "회의나 협업에서 당신의 의견이 존중받으며 분위기를 주도할 수 있습니다. " +
-        "복잡한 문제도 냉정하고 차분하게 접근하면 해결의 실마리를 찾게 됩니다. " +
-        "오늘은 특히 효율적인 시간 관리가 성패를 좌우할 것입니다. " +
-        "새로운 프로젝트나 아이디어를 제안하기 좋은 날이기도 합니다. " +
-        "신뢰와 책임감을 보여준다면 장기적으로 좋은 평가로 이어질 것입니다. " +
-        "스트레스를 너무 쌓아두지 말고 휴식도 균형 있게 취하세요.",
-    },
-    방위운: {
-      score: 70,
-      text:
-        "이동이나 만남에서 길한 방향을 따르는 것이 중요한 날입니다. " +
-        "남서·서북 방위가 특히 좋은 기운을 주며, 이쪽으로 나아가면 좋은 소식을 얻을 수 있습니다. " +
-        "외출이나 중요한 약속은 해당 방향으로 잡는 것이 유리합니다. " +
-        "새로운 인연이나 협력자가 그곳에서 기다리고 있을 가능성이 큽니다. " +
-        "작은 외출이라도 길한 방향을 따른다면 운이 상승합니다. " +
-        "집이나 사무실의 방향을 점검하고 정리하면 좋은 에너지가 흐릅니다. " +
-        "길운을 따라 움직이면 작은 행운이 크게 불어날 수 있습니다. " +
-        "오늘 하루는 방향이 당신의 운세를 결정짓는 중요한 열쇠가 될 것입니다.",
-    },
-  },
-  weekly: [
-    { label: "일", value: 85 },
-    { label: "월", value: 96 },
-    { label: "화", value: 72 },
-    { label: "수", value: 75 },
-    { label: "목", value: 92 },
-    { label: "금", value: 76 },
-    { label: "토", value: 80 },
-  ],
 };
 
 // ===== 공통 소품 =====
@@ -376,7 +265,7 @@ function getUserNameFromCookie(): string {
 }
 
 // ===== 메인 컴포넌트 =====
-export default function Result({ data = MOCK }: { data?: ResultData }) {
+export default function Result({ data: initialData }: { data?: ResultData }) {
   const [active, setActive] = useState<CategoryKey>("총운");
   const [expanded, setExpanded] = useState(false);
   const router = useRouter();
@@ -384,9 +273,50 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
   const [showNoRewardModal, setShowNoRewardModal] = useState(false);
   const [pendingRewardStatus, setPendingRewardStatus] = useState<'success' | 'already' | null>(null);
   const [showRewardToast, setShowRewardToast] = useState(false);
+  const [data, setData] = useState<ResultData | null>(initialData || null);
+  const [isLoading, setIsLoading] = useState(!initialData);
 
-  const activeText = data.categories[active].text;
-  const activeScore = data.categories[active].score;
+  // API에서 데이터 가져오기
+  useEffect(() => {
+    if (initialData) return; // 이미 데이터가 있으면 스킵
+
+    const fetchFortuneData = async () => {
+      try {
+        const fortuneInfo = getFortuneInfo();
+        if (!fortuneInfo) {
+          console.error('사주 정보가 없습니다.');
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch('/api/fortune/daily', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(fortuneInfo),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch fortune data');
+        }
+
+        const result = await response.json();
+        if (result.success && result.data) {
+          setData(result.data);
+        }
+      } catch (error) {
+        console.error('운세 데이터 로딩 실패:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFortuneData();
+  }, [initialData]);
+
+  const activeText = data?.categories[active].text || '';
+  const activeScore = data?.categories[active].score || 0;
 
   // 쿠팡 상품 클릭 핸들러
   const handleCoupangProductClick = () => {
@@ -502,6 +432,11 @@ export default function Result({ data = MOCK }: { data?: ResultData }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [pendingRewardStatus]);
+
+  // 로딩 중이거나 데이터가 없을 때 하얀 화면 표시
+  if (isLoading || !data) {
+    return <div style={{ width: '100vw', height: '100vh', backgroundColor: '#fff' }} />;
+  }
 
   return (
     <div className={styles.screen}>
