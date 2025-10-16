@@ -275,6 +275,7 @@ export default function Result({ data: initialData }: { data?: ResultData }) {
   const [showRewardToast, setShowRewardToast] = useState(false);
   const [data, setData] = useState<ResultData | null>(initialData || null);
   const [isLoading, setIsLoading] = useState(!initialData);
+  const hasCheckedReward = useRef(false);
 
   // API에서 데이터 가져오기
   useEffect(() => {
@@ -357,7 +358,8 @@ export default function Result({ data: initialData }: { data?: ResultData }) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
 
-    document.cookie = `dailyReward=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+    const cookieString = `dailyReward=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = cookieString;
   };
 
   // 오늘 이미 "이미 지급" 모달을 본 적이 있는지 확인
@@ -386,26 +388,44 @@ export default function Result({ data: initialData }: { data?: ResultData }) {
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
 
-    document.cookie = `seenNoRewardModal=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+    const cookieString = `seenNoRewardModal=${today}; expires=${tomorrow.toUTCString()}; path=/`;
+    document.cookie = cookieString;
   };
 
   // 페이지 진입 시 리워드 상태 확인 (모달은 바로 띄우지 않음)
   useEffect(() => {
-    // 첫 진입인지 확인
-    const isFirstVisitToday = canReceiveReward();
+    // 이미 체크했으면 스킵 (개발 모드 useEffect 두 번 실행 방지)
+    if (hasCheckedReward.current) return;
+    hasCheckedReward.current = true;
 
-    if (isFirstVisitToday) {
-      // 첫 진입: 리워드 지급
+    const today = new Date().toISOString().split('T')[0];
+
+    // dailyReward 쿠키 확인
+    const dailyRewardCookie = document.cookie
+      .split(';')
+      .find(cookie => cookie.trim().startsWith('dailyReward='))
+      ?.split('=')[1];
+
+    // dailyReward가 없거나 오늘 날짜가 아니면 → 포인트 지급
+    if (!dailyRewardCookie || dailyRewardCookie !== today) {
       setPendingRewardStatus('success');
       markTodayRewardReceived();
-    } else {
-      // 두 번째+ 진입: 오늘 첫 번째 재방문인 경우에만 "이미 지급" 모달 표시
-      if (!hasSeenNoRewardModalToday()) {
-        setPendingRewardStatus('already');
-        markNoRewardModalSeen();
-      }
-      // 이미 모달을 본 경우: 아무것도 표시하지 않음 (pendingRewardStatus는 null 유지)
+      return;
     }
+
+    // dailyReward가 오늘 날짜면 → seenNoRewardModal 확인
+    const seenNoRewardCookie = document.cookie
+      .split(';')
+      .find(cookie => cookie.trim().startsWith('seenNoRewardModal='))
+      ?.split('=')[1];
+
+    // seenNoRewardModal이 없거나 오늘 날짜가 아니면 → 기지급 모달
+    if (!seenNoRewardCookie || seenNoRewardCookie !== today) {
+      setPendingRewardStatus('already');
+      markNoRewardModalSeen();
+      return;
+    }
+    // 둘 다 오늘 날짜면 → 아무것도 안 띄움
   }, []);
 
   // 화면 복귀 감지 후 모달 표시
